@@ -23,6 +23,36 @@ $layout = onepress_get_layout();
 
 			
 			
+<?php
+
+	$_product = wc_get_product('170');
+	$MealVariationIDs = $_product->get_visible_children();
+	
+	foreach ($MealVariationIDs as $CurrentVariationID) {
+
+		echo "Variation ID: $CurrentVariationID<BR />";
+		$_product = wc_get_product($CurrentVariationID);
+		$RegPrice = $_product->get_regular_price();
+
+		echo "->Current Price: $RegPrice<BR />";
+
+		$lateprice = $RegPrice + 1;
+		update_post_meta($CurrentVariationID, '_regular_price', $lateprice);
+		wc_delete_product_transients( $CurrentVariationID );
+	
+		$_product = wc_get_product($CurrentVariationID);
+		echo "->Updated Price: " . $_product->get_regular_price() . "<BR />";
+}
+	
+?>		
+			
+
+			
+				
+			
+			
+			
+			
 			<?php //testing getting product attributes
 				$_product = wc_get_product('170');
 				echo nl2br ($_product->get_image( array( 80, 128 ) ) . PHP_EOL . "<a href='" . $_product->get_permalink() . "'>" . $_product->get_title() . "</a>" . PHP_EOL );
@@ -197,7 +227,7 @@ $layout = onepress_get_layout();
 			<?php //displays the product using the shortcode
 			echo do_shortcode('[product id="170"]'); ?>
 			
-			
+		
 			
 
 			
