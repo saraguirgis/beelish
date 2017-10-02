@@ -11,6 +11,21 @@ class HtmlHelpers {
     }
 
     /**
+     * Writes an HTML table header cell.
+     * @param string $cellContent Contents of the cell.
+     * @param string $style (Optional) Table cell style.
+     */
+     public static function writeTableHeaderCell($cellContent, $style = null) {
+        echo "<th";
+
+        // write style contents if provided
+        if ($style !== null) {
+            echo " style=\"$style\"";
+        }
+        echo ">$cellContent</th>\r\n";
+    }
+
+    /**
      * Writes an HTML table cell.
      * @param string $cellContent Contents of the cell.
      * @param string $style (Optional) Table cell style.
@@ -22,7 +37,7 @@ class HtmlHelpers {
         if ($style !== null) {
             echo " style=\"$style\"";
         }
-        ">$cellContent</td>\r\n";
+        echo ">$cellContent</td>\r\n";
     }
     
     /**
@@ -31,6 +46,14 @@ class HtmlHelpers {
      */
     public static function writeInItalics($content) {
         echo "<i>$content</i>";
+    }
+
+    /**
+     * Writes a header 2 text.
+     * @param string $content Text content to be written in header 2.
+     */
+     public static function writeH2($content) {
+        echo "<h2>$content</h2>\r\n";
     }
 
     /**
@@ -46,5 +69,27 @@ class HtmlHelpers {
      public static function writeTableRowEndTag() {
         echo "</tr>\r\n";
     }
+
+    /**
+     * Writes Table start tag.
+     * @param string $style (Optional) Table style.
+     */
+     public static function writeTableStartTag($style = null) {
+        echo "<table";
+
+        // write style contents if provided
+        if ($style !== null) {
+            echo " style=\"$style\"";
+        }
+        echo ">\r\n";
+    }
+
+   /**
+    * Writes Table end tag.
+    */
+    public static function writeTableEndTag() {
+       echo "</table>\r\n";
+   }
+
 }
 ?>
