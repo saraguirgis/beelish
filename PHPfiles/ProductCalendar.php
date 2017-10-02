@@ -38,8 +38,8 @@ class ProductCalendar {
         "10/12/2017" => ProductCalendar::NoDetailsProductId,
         "10/13/2017" => ProductCalendar::NoDetailsProductId  
     );
-    
-    function ProductCalendar() {
+
+    function __construct() {
     }
 
     function renderCalendar() {
@@ -60,7 +60,7 @@ class ProductCalendar {
         HtmlHelpers::writeTableRowStartTag();
 
         $columnNumber = 0;
-        foreach ($this->$products as $productDate => $productId) {
+        foreach ($this->products as $productDate => $productId) {
 
             // end table row and start a new one 
             if ($columnNumber > 4) {
