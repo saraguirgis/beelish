@@ -22,7 +22,7 @@ class HtmlHelpers {
         if ($style !== null) {
             echo " style=\"$style\"";
         }
-        ">$cellContent</th>\r\n";
+        echo ">$cellContent</th>\r\n";
     }
 
     /**
@@ -37,7 +37,7 @@ class HtmlHelpers {
         if ($style !== null) {
             echo " style=\"$style\"";
         }
-        ">$cellContent</td>\r\n";
+        echo ">$cellContent</td>\r\n";
     }
     
     /**
