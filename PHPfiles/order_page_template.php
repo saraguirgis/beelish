@@ -10,6 +10,7 @@
 $layout = onepress_get_layout();
 
 include "ProductCalendar.php";
+include "CalendarEntries.php";
 
 ?>
 
@@ -57,8 +58,15 @@ include "ProductCalendar.php";
 	<!-- Menu Table -->
 
 <?php
-  $myCalendar = new ProductCalendar();
-	$myCalendar->renderCalendar();
+
+$octoberCalendar = new ProductCalendar("October 2017", CalendarEntries::OctoberProducts);
+$octoberCalendar->renderCalendar();
+
+$novemberCalendar = new ProductCalendar("November 2017", CalendarEntries::NovemberProducts);
+$novemberCalendar->renderCalendar();
+
+$decemberCalendar = new ProductCalendar("December 2017", CalendarEntries::DecemberProducts);
+$decemberCalendar->renderCalendar();
 ?>
 	  
       </main>

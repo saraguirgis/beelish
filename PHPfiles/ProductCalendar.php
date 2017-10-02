@@ -3,12 +3,17 @@ include "HtmlHelpers.php";
 include "Constants.php";
 
 class ProductCalendar {
-    function ProductCalendar() {
+    const NoLunchProductId = -1;
+    const NoDetailsProductId = null;
+
+    function __construct($calendarTitle, $productValues) {
+        $this->calendarTitle = $calendarTitle;
+        $this->products = $productValues;
     }
 
     function renderCalendar() {
 
-        HtmlHelpers::writeH2("October 2017");
+        HtmlHelpers::writeH2($this->calendarTitle);
 
         HtmlHelpers::writeTableStartTag("color: #000000; vertical-align: top;");
 
@@ -22,46 +27,32 @@ class ProductCalendar {
         HtmlHelpers::writeTableRowEndTag();
 
         HtmlHelpers::writeTableRowStartTag();
-        HtmlHelpers::writeTableCell("Sept 11, 2017 <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableCell("Sept 12, 2017 <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableCell("Sept 13, 2017 <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableCell("Sept 14, 2017 <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableCell("Sept 15, 2017 <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableRowEndTag();
 
-        HtmlHelpers::writeTableRowStartTag();
-        HtmlHelpers::writeTableCell("Sept 18, 2017 <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableCell("Sept 19, 2017 <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableCell("Sept 20, 2017 <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableCell("Sept 21, 2017 <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableCell("Sept 22, 2017 <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableRowEndTag();
+        $columnNumber = 0;
+        foreach ($this->products as $productDate => $productId) {
 
-        HtmlHelpers::writeTableRowStartTag();
-        display_meal(170);
-        display_meal(167);
-        display_meal(159);
-        display_meal(389);
-        display_meal(392);
-        HtmlHelpers::writeTableRowEndTag();
+            // end table row and start a new one 
+            if ($columnNumber > 4) {
+                HtmlHelpers::writeTableRowEndTag();
+                HtmlHelpers::writeTableRowStartTag();
+                $columnNumber = 0;
+            }
+            if ($productId === ProductCalendar::NoLunchProductId) {
+                $dateString = date_format(new DateTime($productDate), "M d, Y");
+                HtmlHelpers::writeTableCell("$dateString <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
+            } elseif ($productId === ProductCalendar::NoDetailsProductId) {
+                HtmlHelpers::writeTableCell("&nbsp;", ThemeConstants::TableCellNothingToOrderStyle);                
+            } else {
+                display_meal($productId);
+            }
 
-        HtmlHelpers::writeTableRowStartTag();
-        display_meal(395);
-        display_meal(401);
-        display_meal(401);		
-        display_meal(437);		
-        display_meal(401);		        
-        HtmlHelpers::writeTableRowEndTag();
-        
-        HtmlHelpers::writeTableRowStartTag();
-        display_meal(401);
-        display_meal(401);
-        HtmlHelpers::writeTableCell("&nbsp;", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableCell("&nbsp;", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableCell("&nbsp;", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableRowEndTag();
+            $columnNumber++;
+        }
 
+        HtmlHelpers::writeTableRowEndTag();
         HtmlHelpers::writeTableEndTag();
+        HtmlHelpers::writeBreakLine();
+        HtmlHelpers::writeBreakLine();        
     }
 }
 
