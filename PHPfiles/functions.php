@@ -116,39 +116,29 @@ function Check_Timing($mealID) {
 			//set custom variable to 'kindalate'
 			update_post_meta($mealID, 'timing_key', 'kindalate');
 			
-		//Adjust qty available for parent product to 50 if it's more than 50
+			//Adjust qty available for parent product to 50 if it's more than 50
 			if ($_product->get_stock_quantity() > 50) {
 				wc_update_product_stock($mealID, 50);
 				}
 			
-		//Get and set new price
-			$var1_prodID = $mealID + 1;
-			$var2_prodID = $mealID + 2;
-          
-			//Variant1 Update
-			$_product = wc_get_product($var1_prodID);
+			//Get and set new price for each variation of the parent product
+			$MealVariationIDs = $_product->get_visible_children();
+		
+			foreach ($MealVariationIDs as $CurrentVariationID) {
+	
+			$_product = wc_get_product($CurrentVariationID);
 			$RegPrice = $_product->get_regular_price();
 			$lateprice = $RegPrice + 1;
-			update_post_meta($var1_prodID, '_regular_price', $lateprice);
-			wc_delete_product_transients( $var1_prodID );
-			
-			//Variant2 Update
-			$_product = wc_get_product($var2_prodID);
-			$RegPrice = $_product->get_regular_price();
-			$lateprice = $RegPrice + 1;
-			update_post_meta($var2_prodID, '_regular_price', $lateprice);
-			wc_delete_product_transients( $var2_prodID );
-			
-			//Reset Product Variable
-			$_product = wc_get_product($mealID);
-			
+			update_post_meta($CurrentVariationID, '_regular_price', $lateprice);
+			wc_delete_product_transients( $CurrentVariationID );
+		
+			}
+		
 		} else {
 			update_post_meta($mealID, 'timing_key', 'toolate');
 		}
 	}
 
-	
-	
 	return $changedeadline;
 }
 
