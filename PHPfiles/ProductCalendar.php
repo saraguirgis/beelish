@@ -8,7 +8,7 @@ class ProductCalendar {
 
     function __construct() {
         // Initialize product dates and IDs array
-        $products = array(
+        $this->products = array(
             "09/11/2017" => ProductCalendar::NoLunchProductId,
             "09/12/2017" => ProductCalendar::NoLunchProductId,
             "09/13/2017" => ProductCalendar::NoLunchProductId,
