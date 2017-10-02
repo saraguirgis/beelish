@@ -59,7 +59,7 @@ class ProductCalendar {
         HtmlHelpers::writeTableRowStartTag();
 
         $columnNumber = 0;
-        foreach ($products as $productDate => $productId) {
+        foreach ($this->products as $productDate => $productId) {
 
             // end table row and start a new one 
             if ($columnNumber > 4) {
