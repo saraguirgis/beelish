@@ -10,7 +10,7 @@ class ProductCalendar {
 
         HtmlHelpers::writeH2("October 2017");
 
-        HtmlHelpers::writeTableStartTag("color: #FFFFFF; vertical-align: top;");
+        HtmlHelpers::writeTableStartTag("color: #000000; vertical-align: top;");
 
         // table header row
         HtmlHelpers::writeTableRowStartTag();
