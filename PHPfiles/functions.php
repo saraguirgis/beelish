@@ -21,16 +21,17 @@ function display_meal($mealID) {
 	} elseif (get_post_meta($mealID, 'timing_key', True) == 'kindalate') {
 		//display NO CLICK product info without background color and separate Order link to product
 		echo nl2br ( ">" . $_product->get_image( array( 80, 128 ) ) . PHP_EOL . $_product->get_title() . "</a>" );
-		If (meal_already_bought() == TRUE) {
+		If (meal_already_bought() == TRUE || meal_in_cart() == TRUE) {
 			echo nl2br ( "<p><p style=\"text-align:center;\"><a href='" . $_product->get_permalink() . "' style=\"color: #9296A1;\"> View details</a></p></p>" );
 		} else {
-			echo nl2br ( "<p><p style=\"text-align:center;\"><a href='" . $_product->get_permalink() . "' style=\"color: #FF6600;\"><i class=\"fa fa-clock-o fa-lg\" aria-hidden=\"true\"></i><i> Order last minute until <br>" . date('D, M d', $changedeadline) . " at noon </i></a></p></p>" );
+			echo nl2br ( "<p><p style=\"text-align:center;\"><a href='" . $_product->get_permalink() . "'><i class=\"fa fa-cutlery\" aria-hidden=\"true\"></i> Order</a><BR /></p>" .			
+			"<p style=\"color: #FF6600;\"><i class=\"fa fa-clock-o fa-lg\" aria-hidden=\"true\"></i><i> Order last minute until <br>" . date('D, M d', $changedeadline) . " at noon </i></p></p>" );
 		}
 	} else {
 
 		//display NO CLICK product info without background color and separate Order link to product
 		echo nl2br ( ">" . $_product->get_image( array( 80, 128 ) ) . PHP_EOL . $_product->get_title() );
-		If (meal_already_bought() == TRUE) {
+		If (meal_already_bought() == TRUE || meal_in_cart() == TRUE) {
 			echo nl2br ( "<p><p style=\"text-align:center;\"><a href='" . $_product->get_permalink() . "' style=\"color: #9296A1;\"> View details</a></p></p>" );
 		} else {
 			echo nl2br ( "<p><p style=\"text-align:center;\"><a href='" . $_product->get_permalink() . "'><i class=\"fa fa-cutlery\" aria-hidden=\"true\"></i> Order</a></p></p>" );
