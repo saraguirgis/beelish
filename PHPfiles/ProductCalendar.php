@@ -38,35 +38,23 @@ class ProductCalendar {
         HtmlHelpers::writeTableRowEndTag();
 
         HtmlHelpers::writeTableRowStartTag();
-        $mealID = 170;
-        display_meal($mealID);
-        $mealID = '167';
+        display_meal(170);
         display_meal(167);
-        $mealID = '159';
         display_meal(159);
-        $mealID = '389';
         display_meal(389);
-        $mealID = '392';
         display_meal(392);
         HtmlHelpers::writeTableRowEndTag();
 
         HtmlHelpers::writeTableRowStartTag();
-        $mealID = '395';
         display_meal(395);
-        $mealID = '401';
         display_meal(401);
-        $mealID = '401';
         display_meal(401);		
-        $mealID = '437';
         display_meal(437);		
-        $mealID = '401';
         display_meal(401);		        
         HtmlHelpers::writeTableRowEndTag();
         
         HtmlHelpers::writeTableRowStartTag();
-        $mealID = '401';
         display_meal(401);
-        $mealID = '401';
         display_meal(401);
         HtmlHelpers::writeTableCell("&nbsp;", ThemeConstants::TableCellNothingToOrderStyle);
         HtmlHelpers::writeTableCell("&nbsp;", ThemeConstants::TableCellNothingToOrderStyle);
