@@ -24,7 +24,8 @@ function display_meal($mealID) {
 		If (meal_already_bought() == TRUE) {
 			echo nl2br ( "<p><p style=\"text-align:center;\"><a href='" . $_product->get_permalink() . "' style=\"color: #9296A1;\"> View details</a></p></p>" );
 		} else {
-			echo nl2br ( "<p><p style=\"text-align:center;\"><a href='" . $_product->get_permalink() . "' style=\"color: #FF6600;\"><i class=\"fa fa-clock-o fa-lg\" aria-hidden=\"true\"></i><i> Order last minute until <br>" . date('D, M d', $changedeadline) . " at noon </i></a></p></p>" );
+			echo nl2br ( "<p><p style=\"text-align:center;\"><a href='" . $_product->get_permalink() . "'><i class=\"fa fa-cutlery\" aria-hidden=\"true\"></i> Order</a><BR /></p>" .			
+			"<p style=\"color: #FF6600;\"><i class=\"fa fa-clock-o fa-lg\" aria-hidden=\"true\"></i><i> Order last minute until <br>" . date('D, M d', $changedeadline) . " at noon </i></p></p>" );
 		}
 	} else {
 
