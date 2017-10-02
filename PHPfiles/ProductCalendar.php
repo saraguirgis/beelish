@@ -51,6 +51,8 @@ class ProductCalendar {
 
         HtmlHelpers::writeTableRowEndTag();
         HtmlHelpers::writeTableEndTag();
+        HtmlHelpers::writeBreakLine();
+        HtmlHelpers::writeBreakLine();        
     }
 }
 
