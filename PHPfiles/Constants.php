@@ -14,8 +14,8 @@ class ThemeConstants {
     /** Table cell height in pixels. */
     const TableCellHeightPixels = "100px";
     /** Table cell header style. */
-    const TableCellHeaderStyle = "width: " . TableCellWidthPercentage . "; bgcolor: " . TableCellHeaderBGColor . ";";
+    const TableCellHeaderStyle = "width: " . ThemeConstants::TableCellWidthPercentage . "; background-color: " . ThemeConstants::TableCellHeaderBGColor . ";";
     /** Table cell style when there's no lunch available or oderering is expired. */
-    const TableCellNothingToOrderStyle = "width: " . TableCellWidthPercentage . "; height: " . TableCellHeightPixels . "; bgcolor: " . TableCellNothingToOrderBGColor . ";";
+    const TableCellNothingToOrderStyle = "width: " . ThemeConstants::TableCellWidthPercentage . "; height: " . ThemeConstants::TableCellHeightPixels . "; background-color: " . ThemeConstants::TableCellNothingToOrderBGColor . ";";
 }
 ?>
