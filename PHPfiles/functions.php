@@ -3,7 +3,7 @@
 /* Display product in calendar/menu view */
 
 function display_meal($mealID) {
-	echo "<td width=\"20%\" height=\"100\"";	
+	echo "<td style=\"width: 20%; height: 100px; vertical-align: top;\"";	
 	//put product data into variable
 	$_product = wc_get_product($mealID);
 	

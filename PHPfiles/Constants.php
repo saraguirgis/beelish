@@ -8,7 +8,7 @@ class ThemeConstants {
     /** Table cell background color when there's no lunch available or ordering is expired. */
     const TableCellNothingToOrderBGColor = "#D3D3D3";
     /** Table cell background color when lunch is available to order. */
-    const TableCellLunchAvailableBGColor = "#FFFFFF";
+    const TableCellLunchAvailableBGColor = "#000000";
     /** Table cell width in percentage. */
     const TableCellWidthPercentage = "20%";
     /** Table cell height in pixels. */
@@ -16,6 +16,6 @@ class ThemeConstants {
     /** Table cell header style. */
     const TableCellHeaderStyle = "width: " . ThemeConstants::TableCellWidthPercentage . "; background-color: " . ThemeConstants::TableCellHeaderBGColor . ";";
     /** Table cell style when there's no lunch available or oderering is expired. */
-    const TableCellNothingToOrderStyle = "width: " . ThemeConstants::TableCellWidthPercentage . "; height: " . ThemeConstants::TableCellHeightPixels . "; background-color: " . ThemeConstants::TableCellNothingToOrderBGColor . ";";
+    const TableCellNothingToOrderStyle = "vertical-align: top; width: " . ThemeConstants::TableCellWidthPercentage . "; height: " . ThemeConstants::TableCellHeightPixels . "; background-color: " . ThemeConstants::TableCellNothingToOrderBGColor . ";";
 }
 ?>
