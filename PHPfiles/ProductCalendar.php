@@ -3,7 +3,42 @@ include "HtmlHelpers.php";
 include "Constants.php";
 
 class ProductCalendar {
+    const NoLunchProductId = -1;
+    const NoDetailsProductId = null;
     function ProductCalendar() {
+        // Initialize product dates and IDs array
+        $products = array(
+            "09/11/2017" => ProductCalendar::NoLunchProductId,
+            "09/12/2017" => ProductCalendar::NoLunchProductId,
+            "09/13/2017" => ProductCalendar::NoLunchProductId,
+            "09/14/2017" => ProductCalendar::NoLunchProductId,
+            "09/15/2017" => ProductCalendar::NoLunchProductId,
+            
+            "09/18/2017" => ProductCalendar::NoLunchProductId,
+            "09/19/2017" => ProductCalendar::NoLunchProductId,
+            "09/20/2017" => ProductCalendar::NoLunchProductId,
+            "09/21/2017" => ProductCalendar::NoLunchProductId,
+            "09/22/2017" => ProductCalendar::NoLunchProductId,
+            
+            "09/25/2017" => 170,
+            "09/26/2017" => 167,
+            "09/27/2017" => 159,
+            "09/28/2017" => 389,
+            "09/29/2017" => 392,
+            
+            "10/02/2017" => 395,
+            "10/03/2017" => 401,
+            "10/04/2017" => 401,
+            "10/05/2017" => 437,
+            "10/06/2017" => 401,
+            
+            "10/09/2017" => 401,
+            "10/10/2017" => 401,
+            "10/11/2017" => ProductCalendar::NoDetailsProductId,
+            "10/12/2017" => ProductCalendar::NoDetailsProductId,
+            "10/13/2017" => ProductCalendar::NoDetailsProductId,
+            
+        );
     }
 
     function renderCalendar() {
@@ -22,45 +57,29 @@ class ProductCalendar {
         HtmlHelpers::writeTableRowEndTag();
 
         HtmlHelpers::writeTableRowStartTag();
-        HtmlHelpers::writeTableCell("Sept 11, 2017 <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableCell("Sept 12, 2017 <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableCell("Sept 13, 2017 <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableCell("Sept 14, 2017 <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableCell("Sept 15, 2017 <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableRowEndTag();
 
-        HtmlHelpers::writeTableRowStartTag();
-        HtmlHelpers::writeTableCell("Sept 18, 2017 <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableCell("Sept 19, 2017 <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableCell("Sept 20, 2017 <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableCell("Sept 21, 2017 <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableCell("Sept 22, 2017 <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableRowEndTag();
+        $columnNumber = 0;
+        foreach ($products as $productDate => $productId) {
 
-        HtmlHelpers::writeTableRowStartTag();
-        display_meal(170);
-        display_meal(167);
-        display_meal(159);
-        display_meal(389);
-        display_meal(392);
-        HtmlHelpers::writeTableRowEndTag();
+            // end table row and start a new one 
+            if ($columnNumber > 4) {
+                HtmlHelpers::writeTableRowEndTag();
+                HtmlHelpers::writeTableRowStartTag();
+                $columnNumber = 0;
+            }
+            if ($productId === ProductCalendar::NoLunchProductId) {
+                $dateString = date_format("F d, Y", new DateTime($productDate));
+                HtmlHelpers::writeTableCell("$dateString <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
+            } elseif ($productId === ProductCalendar::NoDetailsProductId) {
+                HtmlHelpers::writeTableCell("&nbsp;", ThemeConstants::TableCellNothingToOrderStyle);                
+            } else {
+                display_meal($productId);
+            }
 
-        HtmlHelpers::writeTableRowStartTag();
-        display_meal(395);
-        display_meal(401);
-        display_meal(401);		
-        display_meal(437);		
-        display_meal(401);		        
-        HtmlHelpers::writeTableRowEndTag();
-        
-        HtmlHelpers::writeTableRowStartTag();
-        display_meal(401);
-        display_meal(401);
-        HtmlHelpers::writeTableCell("&nbsp;", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableCell("&nbsp;", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableCell("&nbsp;", ThemeConstants::TableCellNothingToOrderStyle);
-        HtmlHelpers::writeTableRowEndTag();
+            $columnNumber++;
+        }
 
+        HtmlHelpers::writeTableRowEndTag();
         HtmlHelpers::writeTableEndTag();
     }
 }
