@@ -1,5 +1,6 @@
 <?php /* Template Name: CustomPageT1 */ 
 
+include "Constants.php";
 
 get_header();
 
@@ -24,6 +25,10 @@ $layout = onepress_get_layout();
 			
 			
 <?php
+
+
+	echo "Constant TableHeaderBGColor: " . ThemeConstants::TableHeaderBGColor . "<BR />";
+
 
 	$_product = wc_get_product('170');
 	$MealVariationIDs = $_product->get_visible_children();
