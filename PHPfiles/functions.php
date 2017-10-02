@@ -3,6 +3,7 @@
 /* Display product in calendar/menu view */
 
 function display_meal($mealID) {
+	echo "<td width=\"20%\" height=\"100\"";	
 	//put product data into variable
 	$_product = wc_get_product($mealID);
 	
@@ -51,6 +52,8 @@ function display_meal($mealID) {
 	if (meal_in_cart() == TRUE) {
 		echo '<mark><i class="fa fa-shopping-cart" aria-hidden="true"></i> Added to cart. Please <a href=\'https://www.beelish.com/checkout/\'><b>check out</b></a> to complete order.</mark>';
 	}
+
+	echo "</td>";
 }
 					
 	

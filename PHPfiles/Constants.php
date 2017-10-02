@@ -4,7 +4,7 @@
  */
 class ThemeConstants {
     /** Table header background color. */
-    const TableHeaderBGColor = "#D9EDF7";
+    const TableCellHeaderBGColor = "#D9EDF7";
     /** Table cell background color when there's no lunch available or ordering is expired. */
     const TableCellNothingToOrderBGColor = "#D3D3D3";
     /** Table cell background color when lunch is available to order. */
@@ -12,6 +12,10 @@ class ThemeConstants {
     /** Table cell width in percentage. */
     const TableCellWidthPercentage = "20%";
     /** Table cell height in pixels. */
-    const TableCellHeightPixels = "100";
+    const TableCellHeightPixels = "100px";
+    /** Table cell header style. */
+    const TableCellHeaderStyle = "width: " . TableCellWidthPercentage . "; bgcolor: " . TableCellHeaderBGColor . ";";
+    /** Table cell style when there's no lunch available or oderering is expired. */
+    const TableCellNothingToOrderStyle = "width: " . TableCellWidthPercentage . "; height: " . TableCellHeightPixels . "; bgcolor: " . TableCellNothingToOrderBGColor . ";";
 }
 ?>
