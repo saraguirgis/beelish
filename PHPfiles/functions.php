@@ -41,10 +41,11 @@ function display_meal($mealID) {
 		
 	//DISPLAY PURCHASE NOTE: if meal is already bought, display that note
 	if (meal_already_bought($mealID)) {
-		if ($current_user->child1firstname == NULL) {
+		$current_user = wp_get_current_user();
+		if ($current_user->child1_name == NULL) {
 			echo '<mark style="background-color:#95D79E;"><i class="fa fa-calendar-check-o" aria-hidden="true"></i><i> Meal ordered</i></mark>';
 		} else {
-			echo '<div class="user-bought"><i>&checkmark; ' . $current_user->child1firstname . ' ordered this.</i></div>';
+			echo '<div class="user-bought"><i>&checkmark; ' . $current_user->child1_name . ' ordered this.</i></div>';
 		}
 	}
 	
