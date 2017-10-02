@@ -38,8 +38,8 @@ class ProductCalendar {
         HtmlHelpers::writeTableRowEndTag();
 
         HtmlHelpers::writeTableRowStartTag();
-        $mealID = '170';
-        display_meal(170);
+        $mealID = 170;
+        display_meal($mealID);
         $mealID = '167';
         display_meal(167);
         $mealID = '159';

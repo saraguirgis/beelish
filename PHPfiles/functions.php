@@ -22,7 +22,7 @@ function display_meal($mealID) {
 	} elseif (get_post_meta($mealID, 'timing_key', True) == 'kindalate') {
 		//display NO CLICK product info without background color and separate Order link to product
 		echo nl2br ( ">" . $_product->get_image( array( 80, 128 ) ) . PHP_EOL . $_product->get_title() . "</a>" );
-		If (meal_already_bought() == TRUE || meal_in_cart() == TRUE) {
+		If (meal_already_bought($mealID) || meal_in_cart($mealID)) {
 			echo nl2br ( "<p><p style=\"text-align:center;\"><a href='" . $_product->get_permalink() . "' style=\"color: #9296A1;\"> View details</a></p></p>" );
 		} else {
 			echo nl2br ( "<p><p style=\"text-align:center;\"><a href='" . $_product->get_permalink() . "'><i class=\"fa fa-cutlery\" aria-hidden=\"true\"></i> Order</a><BR /></p>" .			
@@ -32,7 +32,7 @@ function display_meal($mealID) {
 
 		//display NO CLICK product info without background color and separate Order link to product
 		echo nl2br ( ">" . $_product->get_image( array( 80, 128 ) ) . PHP_EOL . $_product->get_title() );
-		If (meal_already_bought() == TRUE || meal_in_cart() == TRUE) {
+		If (meal_already_bought($mealID) || meal_in_cart($mealID)) {
 			echo nl2br ( "<p><p style=\"text-align:center;\"><a href='" . $_product->get_permalink() . "' style=\"color: #9296A1;\"> View details</a></p></p>" );
 		} else {
 			echo nl2br ( "<p><p style=\"text-align:center;\"><a href='" . $_product->get_permalink() . "'><i class=\"fa fa-cutlery\" aria-hidden=\"true\"></i> Order</a></p></p>" );
@@ -40,7 +40,7 @@ function display_meal($mealID) {
 	}
 		
 	//DISPLAY PURCHASE NOTE: if meal is already bought, display that note
-	if (meal_already_bought() == TRUE) {
+	if (meal_already_bought($mealID)) {
 		if ($current_user->child1firstname == NULL) {
 			echo '<mark style="background-color:#95D79E;"><i class="fa fa-calendar-check-o" aria-hidden="true"></i><i> Meal ordered</i></mark>';
 		} else {
@@ -49,7 +49,7 @@ function display_meal($mealID) {
 	}
 	
 	//DISPLAY CART NOTE: if meal is in the cart, display that note
-	if (meal_in_cart() == TRUE) {
+	if (meal_in_cart($mealID)) {
 		echo '<mark><i class="fa fa-shopping-cart" aria-hidden="true"></i> Added to cart. Please <a href=\'https://www.beelish.com/checkout/\'><b>check out</b></a> to complete order.</mark>';
 	}
 
@@ -199,10 +199,9 @@ function Check_Timing_TooLateOnly($mealID) {
  * @author        Rodolfo Melogli
  */
 
-function meal_already_bought() {
+function meal_already_bought($mealID) {
 		$current_user = wp_get_current_user();
-		global $mealID;
-		if ( wc_customer_bought_product( $current_user->user_email, $current_user->ID, $mealID ) ) 
+		if ( wc_customer_bought_product( $current_user->user_email, $current_user->ID, "$mealID" ) ) 
 			return TRUE;
 }
 
@@ -210,12 +209,11 @@ function meal_already_bought() {
 
 /* See if the product is in the cart. */
 
-function meal_in_cart() {
-	global $mealID;
+function meal_in_cart($mealID) {
     foreach(WC()->cart->get_cart() as $key => $val ) {
         $_product = $val['data'];
  
-        if($mealID == $_product->id ) {
+        if("$mealID" == $_product->id ) {
             Return TRUE;
         }
     }
