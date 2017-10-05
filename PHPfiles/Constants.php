@@ -25,7 +25,7 @@ class ThemeConstants {
  * A class to hold Product order timing constants
  */
 class ProductOrderTiming {
-    /** Too late to order */
+    /** On time order */
     const OnTime = "ontime";
     /** Late order */
     const KindaLate = "kindalate";
