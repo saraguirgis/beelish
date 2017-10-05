@@ -135,11 +135,8 @@ class ProductCalendar {
 			$changedeadline = ($deliveryDateTime-129600);
 		}
 					
-		//Set holidays
-		$holidays = array("2017-11-23","2017-12-25","2017-12-24","2018-01-01");
-					
 		//Subtract a day for the holidays
-		foreach($holidays as $holiday){
+		foreach(CalendarEntries::Holidays as $holiday){
 			$time_stamp=strtotime($holiday);
 		
 			//If the holiday doesn't fall in weekend, move back change deadline by a day

@@ -1,5 +1,11 @@
 <?php
 class CalendarEntries {
+	const Holidays = array(
+		"2017-11-23",
+		"2017-12-25",
+		"2017-12-24",
+		"2018-01-01");
+	
     const OctoberProducts = array(
 		"10/02/2017" => ProductCalendar::NoLunchProductId,
 		"10/03/2017" => ProductCalendar::NoLunchProductId,
