@@ -59,13 +59,15 @@ include "CalendarEntries.php";
 
 <?php
 
-$octoberCalendar = new ProductCalendar("October 2017", CalendarEntries::OctoberProducts);
+//TODO: get child id from dropdown
+$childId = 1;
+$octoberCalendar = new ProductCalendar("October 2017", CalendarEntries::OctoberProducts, $childId);
 $octoberCalendar->renderCalendar();
 
-$novemberCalendar = new ProductCalendar("November 2017", CalendarEntries::NovemberProducts);
+$novemberCalendar = new ProductCalendar("November 2017", CalendarEntries::NovemberProducts, $childId);
 $novemberCalendar->renderCalendar();
 
-$decemberCalendar = new ProductCalendar("December 2017", CalendarEntries::DecemberProducts);
+$decemberCalendar = new ProductCalendar("December 2017", CalendarEntries::DecemberProducts, $childId);
 $decemberCalendar->renderCalendar();
 ?>
 	  
