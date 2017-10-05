@@ -166,7 +166,6 @@ class ProductCalendar {
     }
 
     private static function renderProductTableCell($productId, $productDetails, $productTimingKey, $orderTooLateDateTime, $childId) {
-        //TODO: wire up child id
         // set table cell style based on product timing key
         $tableCellStyle = ($productTimingKey == ProductOrderTiming::TooLate) ?
             ThemeConstants::TableCellNothingToOrderStyle :
@@ -192,11 +191,11 @@ class ProductCalendar {
             HtmlHelpers::writeBreakLine();
         } elseif (meal_already_bought($productId) || meal_in_cart($productId)) {
             HtmlHelpers::writeParagraphStartTag("text-align:center;");
-            HtmlHelpers::writeAnchor($productDetails->get_permalink(), "View details", "color: #9296A1;");
+            HtmlHelpers::writeAnchor($productDetails->get_permalink() . "?childId=$childId", "View details", "color: #9296A1;");
             HtmlHelpers::writeParagraphEndTag();
         } else {
             HtmlHelpers::writeParagraphStartTag("text-align:center;");
-            HtmlHelpers::writeAnchorStartTag($productDetails->get_permalink());
+            HtmlHelpers::writeAnchorStartTag($productDetails->get_permalink() . "?childId=$childId");
             echo "<i class=\"fa fa-cutlery\" aria-hidden=\"true\"></i>&nbsp;Order";
             HtmlHelpers::writeAnchorEndTag();
             HtmlHelpers::writeBreakLine();
