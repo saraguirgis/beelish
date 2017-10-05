@@ -54,18 +54,53 @@ include "CalendarEntries.php";
 
 					<?php endwhile; // End of the loop. ?>  
 					
-	
-	<!-- Menu Table -->
+<script>
+function childIdDropDownOnChange(){
+    document.getElementById("childSelectionForm").submit();
+}
+</script>
+
+  <!-- TODO: Replace with account data -->
+
+
+	<?php
+	function renderChildDropDownMenu($selectedChildId) {
+		//TODO: change array value with real account data
+		$children = array(
+			1 => "Natalie Wahba",
+			2 => "Adriana Wahba",
+		);
+
+		echo "<form id=\"childSelectionForm\" method=\"post\" action=\"$PHP_SELF\">";
+		echo "<h2>Ordering for:  <select name=\"childIdDropDown\" onchange=\"childIdDropDownOnChange()\">";
+
+		foreach($children as $childId => $childName) {
+			echo "<option value=\"$childId\"";
+			if ($selectedChildId == $childId) {
+				echo " selected";
+			}
+			echo ">$childName</option>";
+		}
+
+		echo "  </select></h2>";
+		echo "</form>";
+	}
+
+	$selectedChildId = $_POST['childIdDropDown'] ?: 1;
+	renderChildDropDownMenu($selectedChildId);
+	?>
+
+<!-- Menu Table -->
 
 <?php
 
-$octoberCalendar = new ProductCalendar("October 2017", CalendarEntries::OctoberProducts);
+$octoberCalendar = new ProductCalendar("October 2017", CalendarEntries::OctoberProducts, $selectedChildId);
 $octoberCalendar->renderCalendar();
 
-$novemberCalendar = new ProductCalendar("November 2017", CalendarEntries::NovemberProducts);
+$novemberCalendar = new ProductCalendar("November 2017", CalendarEntries::NovemberProducts, $selectedChildId);
 $novemberCalendar->renderCalendar();
 
-$decemberCalendar = new ProductCalendar("December 2017", CalendarEntries::DecemberProducts);
+$decemberCalendar = new ProductCalendar("December 2017", CalendarEntries::DecemberProducts, $selectedChildId);
 $decemberCalendar->renderCalendar();
 ?>
 	  

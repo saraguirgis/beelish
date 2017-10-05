@@ -15,7 +15,21 @@ class ThemeConstants {
     const TableCellHeightPixels = "100px";
     /** Table cell header style. */
     const TableCellHeaderStyle = "width: " . ThemeConstants::TableCellWidthPercentage . "; background-color: " . ThemeConstants::TableCellHeaderBGColor . ";";
+    /** Default Table cell style. */
+    const TableCellDefaultStyle = "vertical-align: top; width: " . ThemeConstants::TableCellWidthPercentage . "; height: " . ThemeConstants::TableCellHeightPixels . "; background-color: " . ThemeConstants::TableCellLunchAvailableBGColor . ";";
     /** Table cell style when there's no lunch available or oderering is expired. */
     const TableCellNothingToOrderStyle = "vertical-align: top; width: " . ThemeConstants::TableCellWidthPercentage . "; height: " . ThemeConstants::TableCellHeightPixels . "; background-color: " . ThemeConstants::TableCellNothingToOrderBGColor . ";";
+}
+
+/**
+ * A class to hold Product order timing constants
+ */
+class ProductOrderTiming {
+    /** On time order */
+    const OnTime = "ontime";
+    /** Late order */
+    const KindaLate = "kindalate";
+    /** Too late to order */
+    const TooLate = "toolate";
 }
 ?>
