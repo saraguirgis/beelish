@@ -126,7 +126,7 @@ class ProductCalendar {
     }
 
     private static function getTooLateOrderDeadline($deliveryDateTime) {
-        //TODO: some cleanup
+        //TODO: some cleanup & revisit logic
 
         //Account for weekends
 		if (date('w',$deliveryDateTime) < 3) {
