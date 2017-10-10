@@ -1,6 +1,6 @@
 <?php
 
-/* Display product in calendar/menu view */
+/* Display product in calendar menu view */
 
 function display_meal($mealID) {
 	echo "<td style=\"width: 20%; height: 100px; vertical-align: top;\"";	
@@ -10,8 +10,6 @@ function display_meal($mealID) {
 	//CHECK TIMING AND DISPLAY PRODUCT INFO ACCORDINGLY:
 	$changedeadline = Check_Timing($mealID);
 
-//	USE THIS TO CLEAR THE TIMING_KEY VARIABLE WHEN NEEDED	
-//	update_post_meta($mealID, 'timing_key', 'ontime');
 	
 	if (get_post_meta($mealID, 'timing_key', True) == 'toolate') {
 		remove_expired_meal_from_cart($mealID);
@@ -239,7 +237,53 @@ function remove_expired_meal_from_cart($mealID) {
     }
 }	
 
-					
+
+/**
+ * @snippet       Add a note under the price if the order is late
+ * @visual product page hooks guide	https://businessbloomer.com/woocommerce-visual-hook-guide-single-product-page/#
+*/
+
+	add_filter( 'woocommerce_after_add_to_cart_form','late_order_notice_price', 30);
+	
+	function late_order_notice_price() {
+		if (get_post_meta( get_the_ID(), 'timing_key', True) == 'kindalate') {
+			echo nl2br ( "<font color=\"#FF6600\">Note: $1 has been added for late orders</font>" );
+		}
+	}
+
+
+
+/**
+ * @snippet       Removes the add to cart button on products that were previously bought or currently in the cart
+ * @visual product page hooks guide	https://businessbloomer.com/woocommerce-visual-hook-guide-single-product-page/#
+*/
+	
+	add_action ( 'woocommerce_before_single_product','remove_add_to_cart_if_bought');
+	
+	function remove_add_to_cart_if_bought() {	
+		if ( meal_already_bought(get_the_ID()) || meal_in_cart(get_the_ID()) ) {
+			remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_rating', 10 );
+			remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40 );
+
+			remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30 );
+
+			add_action( 'woocommerce_single_product_summary', 'print_no_dup_orders', 31 );
+			add_action( 'woocommerce_after_shop_loop_item', 'print_no_dup_orders', 11 );
+		} else {
+			remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_rating', 10 );
+			remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40 );
+		}
+	}
+	
+	function print_no_dup_orders() {
+		echo '<em>Meal already purchased or in cart.</em>';
+	}	
+	
+	
+	
+	
+
+
 /**
  * @snippet       Remove Variable Product Prices Everywhere
  * @how-to        Watch tutorial @ https://businessbloomer.com/?p=19055
@@ -248,13 +292,31 @@ function remove_expired_meal_from_cart($mealID) {
  * @compatible    WooCommerce 2.4.7
  */
  
-add_filter( 'woocommerce_variable_sale_price_html', 'bbloomer_remove_variation_price', 10, 2 );
-add_filter( 'woocommerce_variable_price_html', 'bbloomer_remove_variation_price', 10, 2 );
- 
-function bbloomer_remove_variation_price( $price ) {
-	$price = '';
-	return $price;
-}
+	add_filter( 'woocommerce_variable_sale_price_html', 'bbloomer_remove_variation_price', 10, 2 );
+	add_filter( 'woocommerce_variable_price_html', 'bbloomer_remove_variation_price', 10, 2 );
+	
+	function bbloomer_remove_variation_price( $price ) {
+		$price = '';
+		return $price;
+	}
 
-					
+
+
+/**
+ * @snippet       Remove irrelvant product data from product page
+ * @visual product page hooks guide	https://businessbloomer.com/woocommerce-visual-hook-guide-single-product-page/#
+ */
+
+
+		 
+	remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs', 10 );
+	remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_upsell_display', 15 );
+	remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20 );
+
+	remove_action( 'woocommerce_review_before', 'woocommerce_review_display_gravatar', 10 );
+	remove_action( 'woocommerce_review_before_comment_meta', 'woocommerce_review_display_rating', 10 );
+	remove_action( 'woocommerce_review_meta', 'woocommerce_review_display_meta', 10 );
+	remove_action( 'woocommerce_review_comment_text', 'woocommerce_review_display_comment_text', 10 );
+
+
 ?>
