@@ -97,7 +97,7 @@ class ProductCalendar {
         } 
         
         // product currently marked ontime, check if it's kindda late, or too late
-        if (time() < $orderLateDateTime) {
+        if (new datetime() < $orderLateDateTime) {
             return ProductOrderTiming::OnTime;
         } elseif (time() < $orderTooLateDateTime) {
             // update product timing state
