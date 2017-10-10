@@ -215,6 +215,19 @@ class ProductCalendar {
                 HtmlHelpers::writeParagraphEndTag();    
             }
         }
+
+        // display note if meal already bought
+        if (meal_already_bought($productId)) {
+    		$current_user = wp_get_current_user();
+            if ($current_user->child1_name == NULL) {
+                echo '<div class="user-bought"><mark style="background-color:#95D79E;"><i class="fa fa-calendar-check-o" aria-hidden="true"></i><i> Meal ordered</i></mark></div>';
+            } else {
+                echo '<div class="user-bought"><i>&checkmark; ' . $current_user->child1_name . ' ordered this.</i></div>';
+            }
+        } elseif (meal_in_cart($productId)) {
+            // display note if meal is in the cart
+            echo '<div class="user-bought"><mark><i class="fa fa-shopping-cart" aria-hidden="true"></i> Added to cart. Please <a href="https://www.beelish.com/cart/"><b>check out</b></a> to complete order.</mark></div>';
+        }
         
         HtmlHelpers::writeTableCellEndTag();
     }
