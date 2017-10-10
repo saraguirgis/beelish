@@ -97,7 +97,7 @@ class ProductCalendar {
         } 
         
         // product currently marked ontime, check if it's kindda late, or too late
-        if (time() < $orderLateDateTime) {
+        if (new datetime() < $orderLateDateTime) {
             return ProductOrderTiming::OnTime;
         } elseif (time() < $orderTooLateDateTime) {
             // update product timing state
@@ -149,6 +149,14 @@ class ProductCalendar {
     }
 
     private static function getLateOrderDeadline($deliveryDateTime) {
+
+        // if Wed-Friday, go to the previous tuesday
+        // else if Tuesday, do nothing
+        // else if Monday, add a day to go to Tuesday
+        // set time to noon
+        // then in all cases subtract 7 days to get to the previous tuesday
+
+
         //find week of initial order deadline
         $deadlineweek = (date('W',$deliveryDateTime)-1);
         
@@ -179,9 +187,8 @@ class ProductCalendar {
         HtmlHelpers::writeBreakLine();
 
         if ($productTimingKey == ProductOrderTiming::TooLate) {
-            if (meal_in_cart($productId)) {
-                remove_expired_meal_from_cart($productId);                
-            }
+            remove_expired_meal_from_cart($productId);
+
             HtmlHelpers::writeParagraphStartTag("text-align:center;");
             HtmlHelpers::writeInItalics("Ordering expired");
             HtmlHelpers::writeParagraphEndTag();
@@ -207,6 +214,19 @@ class ProductCalendar {
                 HtmlHelpers::writeInItalics(date('D, M d', $orderTooLateDateTime) . " at noon");
                 HtmlHelpers::writeParagraphEndTag();    
             }
+        }
+
+        // display note if meal already bought
+        if (meal_already_bought($productId)) {
+    		$current_user = wp_get_current_user();
+            if ($current_user->child1_name == NULL) {
+                echo '<div class="user-bought"><mark style="background-color:#95D79E;"><i class="fa fa-calendar-check-o" aria-hidden="true"></i><i> Meal ordered</i></mark></div>';
+            } else {
+                echo '<div class="user-bought"><i>&checkmark; ' . $current_user->child1_name . ' ordered this.</i></div>';
+            }
+        } elseif (meal_in_cart($productId)) {
+            // display note if meal is in the cart
+            echo '<div class="user-bought"><mark><i class="fa fa-shopping-cart" aria-hidden="true"></i> Added to cart. Please <a href="https://www.beelish.com/cart/"><b>check out</b></a> to complete order.</mark></div>';
         }
         
         HtmlHelpers::writeTableCellEndTag();

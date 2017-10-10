@@ -86,6 +86,7 @@ function childIdDropDownOnChange(){
 		echo "</form>";
 	}
 
+	//TODO: validate proper childID
 	$selectedChildId = $_POST['childIdDropDown'] ?: 1;
 	renderChildDropDownMenu($selectedChildId);
 	?>

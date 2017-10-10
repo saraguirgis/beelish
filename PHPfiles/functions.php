@@ -221,7 +221,7 @@ function meal_in_cart($mealID) {
 
 
 /* Remove a meal from the cart because it's ordering period has expired. */
-
+//TODO: update method to dynamically find product's children
 function remove_expired_meal_from_cart($mealID) {
 	global $woocommerce;
 	
@@ -231,8 +231,6 @@ function remove_expired_meal_from_cart($mealID) {
                 //Remove it from cart
 				WC()->cart->remove_cart_item($cart_item_key);
 				echo "Item " . $mealID . " was removed from the cart." . PHP_EOL;
-			} else {
-				echo "Item not found in cart." . PHP_EOL;
 			}
     }
 }	
