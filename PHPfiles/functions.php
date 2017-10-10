@@ -1,4 +1,6 @@
 <?php
+include "Constants.php";
+
 
 /* Display product in calendar menu view */
 
@@ -230,7 +232,7 @@ function remove_expired_meal_from_cart($mealID) {
             if( $cart_item['product_id'] == $mealID || $cart_item['product_id'] == ($mealID + 1) || $cart_item['product_id'] == ($mealID + 2) ) {
                 //Remove it from cart
 				WC()->cart->remove_cart_item($cart_item_key);
-				echo "Item " . $mealID . " was removed from the cart." . PHP_EOL;
+				echo "This item was removed from the cart since the ordering deadline has expired." . PHP_EOL;
 			}
     }
 }	
@@ -259,7 +261,17 @@ function remove_expired_meal_from_cart($mealID) {
 	add_action ( 'woocommerce_before_single_product','remove_add_to_cart_if_bought');
 	
 	function remove_add_to_cart_if_bought() {	
-		if ( meal_already_bought(get_the_ID()) || meal_in_cart(get_the_ID()) ) {
+		//remove from cart if ordering is expired
+		$productTimingKey = get_post_meta(get_the_ID(),'timing_key',True);
+		
+		if ( $productTimingKey == ProductOrderTiming::TooLate ) {
+			remove_expired_meal_from_cart(get_the_ID());
+			
+			remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_rating', 10 );
+			remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40 );
+
+			remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30 );
+		} elseif ( meal_already_bought(get_the_ID()) || meal_in_cart(get_the_ID()) ) {
 			remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_rating', 10 );
 			remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40 );
 
@@ -268,9 +280,11 @@ function remove_expired_meal_from_cart($mealID) {
 			add_action( 'woocommerce_single_product_summary', 'print_no_dup_orders', 31 );
 			add_action( 'woocommerce_after_shop_loop_item', 'print_no_dup_orders', 11 );
 		} else {
+			// remove extra product data on the product page
 			remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_rating', 10 );
 			remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40 );
 		}
+	
 	}
 	
 	function print_no_dup_orders() {
