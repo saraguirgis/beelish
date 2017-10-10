@@ -149,6 +149,14 @@ class ProductCalendar {
     }
 
     private static function getLateOrderDeadline($deliveryDateTime) {
+
+        // if Wed-Friday, go to the previous tuesday
+        // else if Tuesday, do nothing
+        // else if Monday, add a day to go to Tuesday
+        // set time to noon
+        // then in all cases subtract 7 days to get to the previous tuesday
+
+
         //find week of initial order deadline
         $deadlineweek = (date('W',$deliveryDateTime)-1);
         
@@ -179,9 +187,8 @@ class ProductCalendar {
         HtmlHelpers::writeBreakLine();
 
         if ($productTimingKey == ProductOrderTiming::TooLate) {
-            if (meal_in_cart($productId)) {
-                remove_expired_meal_from_cart($productId);                
-            }
+            remove_expired_meal_from_cart($productId);
+
             HtmlHelpers::writeParagraphStartTag("text-align:center;");
             HtmlHelpers::writeInItalics("Ordering expired");
             HtmlHelpers::writeParagraphEndTag();
