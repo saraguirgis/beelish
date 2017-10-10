@@ -1,6 +1,6 @@
 <?php
 include "HtmlHelpers.php";
-include "Constants.php";
+//include "Constants.php"; not included here since included in the functions file
 
 class ProductCalendar {
     const NoLunchProductId = -1;
