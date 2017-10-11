@@ -246,7 +246,7 @@ function remove_expired_meal_from_cart($mealID) {
 	add_filter( 'woocommerce_after_add_to_cart_form','late_order_notice_price', 30);
 	
 	function late_order_notice_price() {
-		if (get_post_meta( get_the_ID(), 'timing_key', True) == 'kindalate' &&
+		if (get_post_meta( get_the_ID(), 'timing_key', True) == ProductOrderTiming::KindaLate &&
 		  BusinessConfigs::LatePenaltyChargeInDollars != 0) {
 			echo nl2br ( "<font color=\"#FF6600\">Note: $" . BusinessConfigs::LatePenaltyChargeInDollars . " has been added for late orders</font>" );
 		}

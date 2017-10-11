@@ -1,5 +1,6 @@
 <?php
 include "HtmlHelpers.php";
+include "TimeHelpers.php";
 //include "Constants.php"; not included here since included in the functions file
 
 class ProductCalendar {
@@ -54,6 +55,10 @@ class ProductCalendar {
             } elseif ($productId === ProductCalendar::NoDetailsProductId) {
                 ProductCalendar::renderNoProductDetailsTableCell();
             } else {
+
+                //update_post_meta($productId, 'timing_key', ProductOrderTiming::OnTime);
+                //$productTimeingKey = ProductOrderTiming::OnTime;
+                
                 $productDetails = wc_get_product($productId);
                 $orderLateDateTime = ProductCalendar::getLateOrderDeadline(strtotime($productDetails->get_SKU()));
                 $orderTooLateDateTime = ProductCalendar::getTooLateOrderDeadline(strtotime($productDetails->get_SKU()));        
@@ -148,26 +153,23 @@ class ProductCalendar {
         return $changedeadline;
     }
 
-    private static function getLateOrderDeadline($deliveryDateTime) {
+    private static function getLateOrderDeadline($deliveryTimestamp) {
 
-        // if Wed-Friday, go to the previous tuesday
-        // else if Tuesday, do nothing
-        // else if Monday, add a day to go to Tuesday
-        // set time to noon
-        // then in all cases subtract 7 days to get to the previous tuesday
+        $resultTimestamp = $deliveryTimestamp;        
 
-
-        //find week of initial order deadline
-        $deadlineweek = (date('W',$deliveryDateTime)-1);
+        // if Wed-Friday, go to the previous tuesday which would be in the current week
+        if (date('w', $deliveryTimestamp) >= TimeHelpers::Wednesday) {
+            $resultTimestamp = strtotime("last Tuesday", $deliveryTimestamp);
+        }
         
-        //set day of initial order deadline
-        $deadline = new DateTime();
-        $deadline->setISODate(date("Y"), $deadlineweek);
+        // go to Tuesday of previous week
+        $resultTimestamp = strtotime("last Tuesday", $resultTimestamp);
 
-        //set time of initial order deadline
-        $deadline->setTime(36, 00);
+        // set time to noon
+        $resultDateTime = DateTime::createFromFormat('U', $resultTimestamp);
+        $resultDateTime->setTime(12, 00);
 
-        return $deadline;
+        return $resultDateTime;
     }
 
     private static function renderProductTableCell($productId, $productDetails, $productTimingKey, $orderTooLateDateTime, $childId) {

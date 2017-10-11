@@ -2,6 +2,7 @@
 
 //errors out because of declaring theme constants
 	//include "Constants.php";
+	include "TimeHelpers.php";
 
 get_header();
 
@@ -74,7 +75,42 @@ $layout = onepress_get_layout();
 		
 		//Reset Product Variable
 		$_product = wc_get_product($mealID);
-*/		
+*/
+
+
+	$productSku = "2017-10-25";
+	// echo "productSku = " . $productSku . " <BR/>";
+	// echo "productsku timestamp = " . date("F j, Y, g:i a", strtotime($productSku)) . " <BR/>";
+	
+	
+	getLateOrderDeadline(strtotime($productSku));
+
+	function getLateOrderDeadline($deliveryTimestamp) {
+		echo " <BR/>";
+		echo "deliveryTimeStamp = " . date("F j, Y, g:i a", $deliveryTimestamp) . " <BR/>";
+
+		$resultTimestamp = $deliveryTimestamp;
+		// if Wed-Friday, go to the previous tuesday which would be in the current week
+		if (date('w', $deliveryTimestamp) >= TimeHelpers::Wednesday) {
+			$resultTimestamp = strtotime("last Tuesday", $deliveryTimestamp);
+			echo "It's past tuesday.  Going to tuesday of current week gets me to: " . date("F j, Y, g:i a", $resultTimestamp) . " <BR/>";
+		}
+		
+		// go to Tuesday of previous week
+		$resultTimestamp = strtotime("last Tuesday", $resultTimestamp);
+		echo "going to tuesday of previous week gets me to: " . date("F j, Y, g:i a", $resultTimestamp) . " <BR/>";
+
+		// set time to noon
+		$resultDateTime = DateTime::createFromFormat('U', $resultTimestamp);
+		$resultDateTime->setTime(12, 00);
+
+		//->format("d/m/Y H:i:s"); 
+		echo "after setting the time, final result is: " . $resultDateTime->format("F j, Y, g:i a") . " <BR/>";
+
+		return $resultDateTime;
+	}
+		
+
 ?>		
 			
 			
