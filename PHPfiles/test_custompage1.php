@@ -1,6 +1,7 @@
 <?php /* Template Name: CustomPageT1 */ 
 
-include "Constants.php";
+//errors out because of declaring theme constants
+	//include "Constants.php";
 
 get_header();
 
@@ -27,7 +28,10 @@ $layout = onepress_get_layout();
 <?php
 
 
-	echo "Constant TableHeaderBGColor: " . ThemeConstants::TableHeaderBGColor . "<BR />";
+	global $woocommerce;
+	echo "this is the permalink for this page: " . get_permalink(257) . PHP_EOL;
+
+	echo "Constant TableHeaderBGColor: " . ThemeConstants::TableCellHeaderBGColor . "<BR />";
 
 
 	$_product = wc_get_product('170');
