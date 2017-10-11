@@ -1,5 +1,15 @@
 <?php
-class CalendarEntries {
+class BusinessConfigs {
+	const LatePenaltyChargeInDollars = 1.00;
+	
+	const ChangesDeadlineInBusinessDays = 2;
+
+	const ResetProductState = false;
+
+	const DefaultProductStockQuantity = 200;
+
+	const ChangeWindowStockQuantity = 50;
+
 	const Holidays = array(
 		"11/23/2017",
 		"12/25/2017",

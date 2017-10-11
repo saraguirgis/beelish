@@ -10,7 +10,6 @@
 $layout = onepress_get_layout();
 
 include "ProductCalendar.php";
-include "CalendarEntries.php";
 
 ?>
 
@@ -95,13 +94,13 @@ function childIdDropDownOnChange(){
 
 <?php
 
-$octoberCalendar = new ProductCalendar("October 2017", CalendarEntries::OctoberProducts, $selectedChildId);
+$octoberCalendar = new ProductCalendar("October 2017", BusinessConfigs::OctoberProducts, $selectedChildId);
 $octoberCalendar->renderCalendar();
 
-$novemberCalendar = new ProductCalendar("November 2017", CalendarEntries::NovemberProducts, $selectedChildId);
+$novemberCalendar = new ProductCalendar("November 2017", BusinessConfigs::NovemberProducts, $selectedChildId);
 $novemberCalendar->renderCalendar();
 
-$decemberCalendar = new ProductCalendar("December 2017", CalendarEntries::DecemberProducts, $selectedChildId);
+$decemberCalendar = new ProductCalendar("December 2017", BusinessConfigs::DecemberProducts, $selectedChildId);
 $decemberCalendar->renderCalendar();
 ?>
 	  

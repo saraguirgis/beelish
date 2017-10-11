@@ -1,6 +1,8 @@
 <?php /* Template Name: CustomPageT1 */ 
 
-include "Constants.php";
+//errors out because of declaring theme constants
+	//include "Constants.php";
+	include "TimeHelpers.php";
 
 get_header();
 
@@ -27,7 +29,10 @@ $layout = onepress_get_layout();
 <?php
 
 
-	echo "Constant TableHeaderBGColor: " . ThemeConstants::TableHeaderBGColor . "<BR />";
+	global $woocommerce;
+	echo "this is the permalink for this page: " . get_permalink(257) . PHP_EOL;
+
+	echo "Constant TableHeaderBGColor: " . ThemeConstants::TableCellHeaderBGColor . "<BR />";
 
 
 	$_product = wc_get_product('170');
@@ -70,7 +75,75 @@ $layout = onepress_get_layout();
 		
 		//Reset Product Variable
 		$_product = wc_get_product($mealID);
-*/		
+*/
+
+
+	$productSku = "2017-10-23";
+	// echo "productSku = " . $productSku . " <BR/>";
+	// echo "productsku timestamp = " . date("F j, Y, g:i a", strtotime($productSku)) . " <BR/>";
+	
+	$orderLateDateTime = getLateOrderDeadline(strtotime($productSku));
+	$orderTooLateDateTime = getTooLateOrderDeadline(strtotime($productSku));
+
+	if (time() > $orderTooLateDateTime->getTimestamp()) {
+		echo "current time is larger than too late date <BR />";
+	}
+
+	function getTooLateOrderDeadline($deliveryTimestamp) {
+		echo " <BR/>";
+		echo "deliveryTimeStamp = " . date("F j, Y, g:i a", $deliveryTimestamp) . " <BR/>";
+        
+        $businessDaysToSubtract = BusinessConfigs::ChangesDeadlineInBusinessDays;
+
+        $resultDeadlineTimestamp = $deliveryTimestamp;
+
+        while ($businessDaysToSubtract > 0) {
+			$resultDeadlineTimestamp = strtotime("yesterday", $resultDeadlineTimestamp);
+			
+			echo "subtract one day gets me to: " . date("F j, Y, g:i a", $resultDeadlineTimestamp) . " <BR/>";
+
+            // only make it count if it was a business day
+            if (!TimeHelpers::isWeekend($resultDeadlineTimestamp)
+             && !TimeHelpers::isHoliday(BusinessConfigs::Holidays, $resultDeadlineTimestamp)) {
+				$businessDaysToSubtract--;
+				echo "this was a business day!<BR />";
+            }
+        }
+
+        // set time to noon
+        $resultDateTime = DateTime::createFromFormat('U', $resultDeadlineTimestamp);
+		$resultDateTime->setTime(12, 00);
+		
+		echo "after setting the time, Order Too Late is: <b>" . $resultDateTime->format("F j, Y, g:i a") . "</b><BR/>";		
+
+        return $resultDateTime;
+	}
+	
+	function getLateOrderDeadline($deliveryTimestamp) {
+		echo " <BR/>";
+		echo "deliveryTimeStamp = " . date("F j, Y, g:i a", $deliveryTimestamp) . " <BR/>";
+
+		$resultTimestamp = $deliveryTimestamp;
+		// if Wed-Friday, go to the previous tuesday which would be in the current week
+		if (date('w', $deliveryTimestamp) >= TimeHelpers::Wednesday) {
+			$resultTimestamp = strtotime("last Tuesday", $deliveryTimestamp);
+			echo "It's past tuesday.  Going to tuesday of current week gets me to: " . date("F j, Y, g:i a", $resultTimestamp) . " <BR/>";
+		}
+		
+		// go to Tuesday of previous week
+		$resultTimestamp = strtotime("last Tuesday", $resultTimestamp);
+		echo "going to tuesday of previous week gets me to: " . date("F j, Y, g:i a", $resultTimestamp) . " <BR/>";
+
+		// set time to noon
+		$resultDateTime = DateTime::createFromFormat('U', $resultTimestamp);
+		$resultDateTime->setTime(12, 00);
+
+		echo "after setting the time, order late is : <b>" . $resultDateTime->format("F j, Y, g:i a") . "</b><BR/>";
+
+		return $resultDateTime;
+	}
+		
+
 ?>		
 			
 			

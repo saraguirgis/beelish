@@ -1,5 +1,6 @@
 <?php
 include "HtmlHelpers.php";
+include "TimeHelpers.php";
 //include "Constants.php"; not included here since included in the functions file
 
 class ProductCalendar {
@@ -55,6 +56,11 @@ class ProductCalendar {
                 ProductCalendar::renderNoProductDetailsTableCell();
             } else {
                 $productDetails = wc_get_product($productId);
+
+                if (BusinessConfigs::ResetProductState) {
+                  ProductCalendar::resetProductState($productId, $productDetails);
+                }
+
                 $orderLateDateTime = ProductCalendar::getLateOrderDeadline(strtotime($productDetails->get_SKU()));
                 $orderTooLateDateTime = ProductCalendar::getTooLateOrderDeadline(strtotime($productDetails->get_SKU()));        
                 $productTimingKey = ProductCalendar::updateProductStateForTiming($productId, $productDetails, $orderLateDateTime, $orderTooLateDateTime);
@@ -68,6 +74,13 @@ class ProductCalendar {
         HtmlHelpers::writeTableEndTag();
         HtmlHelpers::writeBreakLine();
         HtmlHelpers::writeBreakLine();        
+    }
+
+    private static function resetProductState($productId, $productDetails) {
+        update_post_meta($productId, 'timing_key', ProductOrderTiming::OnTime);
+
+        // reset default inventory count
+        wc_update_product_stock($productId, BusinessConfigs::DefaultProductStockQuantity);
     }
 
     private static function renderNoLunchTableCell($productDate) {
@@ -89,7 +102,7 @@ class ProductCalendar {
 
         if ($productTimingKey == ProductOrderTiming::KindaLate) {
             // check if it's too late to order
-            if (time() > $orderTooLateDateTime) {
+            if (time() > $orderTooLateDateTime->getTimestamp()) {
                 update_post_meta($productId, 'timing_key', ProductOrderTiming::TooLate);
                 return ProductOrderTiming::TooLate;
             }
@@ -97,15 +110,15 @@ class ProductCalendar {
         } 
         
         // product currently marked ontime, check if it's kindda late, or too late
-        if (new datetime() < $orderLateDateTime) {
+        if (time() < $orderLateDateTime->getTimestamp()) {
             return ProductOrderTiming::OnTime;
-        } elseif (time() < $orderTooLateDateTime) {
+        } elseif (time() < $orderTooLateDateTime->getTimestamp()) {
             // update product timing state
             update_post_meta($productId, 'timing_key', ProductOrderTiming::KindaLate);
 
             // update product's inventory count
-            if ($productDetails->get_stock_quantity() > 50) {
-                wc_update_product_stock($productId, 50);
+            if ($productDetails->get_stock_quantity() > BusinessConfigs::ChangeWindowStockQuantity) {
+                wc_update_product_stock($productId, BusinessConfigs::ChangeWindowStockQuantity);
             }
 
             //Get and set new price for each variation of the parent product
@@ -114,7 +127,7 @@ class ProductCalendar {
             foreach ($mealVariationIds as $currentVariationId) {
                 $productVariation = wc_get_product($currentVariationId);
                 $RegPrice = $productVariation->get_regular_price();
-                $lateprice = $RegPrice + 1;
+                $lateprice = $RegPrice + BusinessConfigs::LatePenaltyChargeInDollars;
                 update_post_meta($currentVariationId, '_regular_price', $lateprice);
                 wc_delete_product_transients($currentVariationId);
             }
@@ -125,49 +138,46 @@ class ProductCalendar {
         }
     }
 
-    private static function getTooLateOrderDeadline($deliveryDateTime) {
-        //TODO: some cleanup & revisit logic
-
-        //Account for weekends
-		if (date('w',$deliveryDateTime) < 3) {
-			$changedeadline = ($deliveryDateTime-302400);
-		} else {
-			$changedeadline = ($deliveryDateTime-129600);
-		}
-					
-		//Subtract a day for the holidays
-		foreach(CalendarEntries::Holidays as $holiday){
-			$time_stamp=strtotime($holiday);
-		
-			//If the holiday doesn't fall in weekend, move back change deadline by a day
-			if ($changedeadline <= $time_stamp && $time_stamp <= $deliveryDateTime && date("N",$time_stamp) != 6 && date("N",$time_stamp) != 7) {
-				$changedeadline = $changedeadline-86400;
-			}
-        }
+    private static function getTooLateOrderDeadline($deliveryTimestamp) {
         
-        return $changedeadline;
+        $businessDaysToSubtract = BusinessConfigs::ChangesDeadlineInBusinessDays;
+
+        $resultDeadlineTimestamp = $deliveryTimestamp;
+
+        while ($businessDaysToSubtract > 0) {
+            $resultDeadlineTimestamp = strtotime("yesterday", $resultDeadlineTimestamp);
+
+            // only make it count if it was a business day
+            if (!TimeHelpers::isWeekend($resultDeadlineTimestamp)
+             && !TimeHelpers::isHoliday(BusinessConfigs::Holidays, $resultDeadlineTimestamp)) {
+                $businessDaysToSubtract--;
+            }
+        }
+
+        // set time to noon
+        $resultDateTime = DateTime::createFromFormat('U', $resultDeadlineTimestamp);
+        $resultDateTime->setTime(12, 00);
+
+        return $resultDateTime;
     }
 
-    private static function getLateOrderDeadline($deliveryDateTime) {
+    private static function getLateOrderDeadline($deliveryTimestamp) {
 
-        // if Wed-Friday, go to the previous tuesday
-        // else if Tuesday, do nothing
-        // else if Monday, add a day to go to Tuesday
-        // set time to noon
-        // then in all cases subtract 7 days to get to the previous tuesday
+        $resultTimestamp = $deliveryTimestamp;        
 
-
-        //find week of initial order deadline
-        $deadlineweek = (date('W',$deliveryDateTime)-1);
+        // if Wed-Friday, go to the previous tuesday which would be in the current week
+        if (date('w', $deliveryTimestamp) >= TimeHelpers::Wednesday) {
+            $resultTimestamp = strtotime("last Tuesday", $deliveryTimestamp);
+        }
         
-        //set day of initial order deadline
-        $deadline = new DateTime();
-        $deadline->setISODate(date("Y"), $deadlineweek);
+        // go to Tuesday of previous week
+        $resultTimestamp = strtotime("last Tuesday", $resultTimestamp);
 
-        //set time of initial order deadline
-        $deadline->setTime(36, 00);
+        // set time to noon
+        $resultDateTime = DateTime::createFromFormat('U', $resultTimestamp);
+        $resultDateTime->setTime(12, 00);
 
-        return $deadline;
+        return $resultDateTime;
     }
 
     private static function renderProductTableCell($productId, $productDetails, $productTimingKey, $orderTooLateDateTime, $childId) {
@@ -211,7 +221,7 @@ class ProductCalendar {
                 echo "<i class=\"fa fa-clock-o fa-lg\" aria-hidden=\"true\"></i>&nbsp;";
                 HtmlHelpers::writeInItalics("Order last minute until");
                 HtmlHelpers::writeBreakLine();
-                HtmlHelpers::writeInItalics(date('D, M d', $orderTooLateDateTime) . " at noon");
+                HtmlHelpers::writeInItalics(date('D, M d', $orderTooLateDateTime->getTimestamp()) . " at noon");
                 HtmlHelpers::writeParagraphEndTag();    
             }
         }
