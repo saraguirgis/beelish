@@ -55,10 +55,6 @@ class ProductCalendar {
             } elseif ($productId === ProductCalendar::NoDetailsProductId) {
                 ProductCalendar::renderNoProductDetailsTableCell();
             } else {
-
-                //update_post_meta($productId, 'timing_key', ProductOrderTiming::OnTime);
-                //$productTimeingKey = ProductOrderTiming::OnTime;
-                
                 $productDetails = wc_get_product($productId);
                 $orderLateDateTime = ProductCalendar::getLateOrderDeadline(strtotime($productDetails->get_SKU()));
                 $orderTooLateDateTime = ProductCalendar::getTooLateOrderDeadline(strtotime($productDetails->get_SKU()));        
@@ -94,7 +90,7 @@ class ProductCalendar {
 
         if ($productTimingKey == ProductOrderTiming::KindaLate) {
             // check if it's too late to order
-            if (time() > $orderTooLateDateTime) {
+            if (time() > $orderTooLateDateTime->getTimestamp()) {
                 update_post_meta($productId, 'timing_key', ProductOrderTiming::TooLate);
                 return ProductOrderTiming::TooLate;
             }
@@ -102,9 +98,9 @@ class ProductCalendar {
         } 
         
         // product currently marked ontime, check if it's kindda late, or too late
-        if (new datetime() < $orderLateDateTime) {
+        if (time() < $orderLateDateTime->getTimestamp()) {
             return ProductOrderTiming::OnTime;
-        } elseif (time() < $orderTooLateDateTime) {
+        } elseif (time() < $orderTooLateDateTime->getTimestamp()) {
             // update product timing state
             update_post_meta($productId, 'timing_key', ProductOrderTiming::KindaLate);
 
@@ -130,27 +126,27 @@ class ProductCalendar {
         }
     }
 
-    private static function getTooLateOrderDeadline($deliveryDateTime) {
-        //TODO: some cleanup & revisit logic
-
-        //Account for weekends
-		if (date('w',$deliveryDateTime) < 3) {
-			$changedeadline = ($deliveryDateTime-302400);
-		} else {
-			$changedeadline = ($deliveryDateTime-129600);
-		}
-					
-		//Subtract a day for the holidays
-		foreach(BusinessConfigs::Holidays as $holiday){
-			$time_stamp=strtotime($holiday);
-		
-			//If the holiday doesn't fall in weekend, move back change deadline by a day
-			if ($changedeadline <= $time_stamp && $time_stamp <= $deliveryDateTime && date("N",$time_stamp) != 6 && date("N",$time_stamp) != 7) {
-				$changedeadline = $changedeadline-86400;
-			}
-        }
+    private static function getTooLateOrderDeadline($deliveryTimestamp) {
         
-        return $changedeadline;
+        $businessDaysToSubtract = BusinessConfigs::ChangesDeadlineInBusinessDays;
+
+        $resultDeadlineTimestamp = $deliveryTimestamp;
+
+        while ($businessDaysToSubtract > 0) {
+            $resultDeadlineTimestamp = strtotime("yesterday", $resultDeadlineTimestamp);
+
+            // only make it count if it was a business day
+            if (!TimeHelpers::isWeekend($resultDeadlineTimestamp)
+             && !TimeHelpers::isHoliday(BusinessConfigs::Holidays, $resultDeadlineTimestamp)) {
+                $businessDaysToSubtract--;
+            }
+        }
+
+        // set time to noon
+        $resultDateTime = DateTime::createFromFormat('U', $resultDeadlineTimestamp);
+        $resultDateTime->setTime(12, 00);
+
+        return $resultDateTime;
     }
 
     private static function getLateOrderDeadline($deliveryTimestamp) {
@@ -213,7 +209,7 @@ class ProductCalendar {
                 echo "<i class=\"fa fa-clock-o fa-lg\" aria-hidden=\"true\"></i>&nbsp;";
                 HtmlHelpers::writeInItalics("Order last minute until");
                 HtmlHelpers::writeBreakLine();
-                HtmlHelpers::writeInItalics(date('D, M d', $orderTooLateDateTime) . " at noon");
+                HtmlHelpers::writeInItalics(date('D, M d', $orderTooLateDateTime->getTimestamp()) . " at noon");
                 HtmlHelpers::writeParagraphEndTag();    
             }
         }

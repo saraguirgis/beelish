@@ -16,25 +16,35 @@ class TimeHelpers {
     /**
      * Returns true if supplied datetime falls on a holiday.
      * @param array $holidayList Array containing list of holidays
-     * @param datetime $date The date to be checked
+     * @param datetime $date The date to be checked as a unix timestamp
      * @return True if date supplied falls on a holiday
      */
     public static function isHoliday($holidayList, $date) {
-        //TODO: implement logic here
+
+        foreach($holidayList as $holiday){
+            $holidayTimestamp = strtotime($holiday);
+
+            if ($holidayTimestamp == $date) {
+                // found a match on a given holiday
+                return true;
+            }
+        }
+
+        // went through all holidays and didn't find a match
         return false;
     }
 
     /**
      * Returns true if supplied datetime falls on a weekend.
-     * @param datetime $date The date to be checked
+     * @param datetime $date The date to be checked as a unix timestamp
      * @return True if date supplied falls on a weekend
      */
     public static function isWeekend($date) {
-        //TODO: implement logic here
+        if (date('w', $date) == TimeHelpers::Saturday || date('w', $date) == TimeHelpers::Sunday) {
+            return true;
+        }
+
         return false;
     }
-
-
-
 }
 ?>

@@ -78,13 +78,47 @@ $layout = onepress_get_layout();
 */
 
 
-	$productSku = "2017-10-25";
+	$productSku = "2017-10-23";
 	// echo "productSku = " . $productSku . " <BR/>";
 	// echo "productsku timestamp = " . date("F j, Y, g:i a", strtotime($productSku)) . " <BR/>";
 	
-	
-	getLateOrderDeadline(strtotime($productSku));
+	$orderLateDateTime = getLateOrderDeadline(strtotime($productSku));
+	$orderTooLateDateTime = getTooLateOrderDeadline(strtotime($productSku));
 
+	if (time() > $orderTooLateDateTime->getTimestamp()) {
+		echo "current time is larger than too late date <BR />";
+	}
+
+	function getTooLateOrderDeadline($deliveryTimestamp) {
+		echo " <BR/>";
+		echo "deliveryTimeStamp = " . date("F j, Y, g:i a", $deliveryTimestamp) . " <BR/>";
+        
+        $businessDaysToSubtract = BusinessConfigs::ChangesDeadlineInBusinessDays;
+
+        $resultDeadlineTimestamp = $deliveryTimestamp;
+
+        while ($businessDaysToSubtract > 0) {
+			$resultDeadlineTimestamp = strtotime("yesterday", $resultDeadlineTimestamp);
+			
+			echo "subtract one day gets me to: " . date("F j, Y, g:i a", $resultDeadlineTimestamp) . " <BR/>";
+
+            // only make it count if it was a business day
+            if (!TimeHelpers::isWeekend($resultDeadlineTimestamp)
+             && !TimeHelpers::isHoliday(BusinessConfigs::Holidays, $resultDeadlineTimestamp)) {
+				$businessDaysToSubtract--;
+				echo "this was a business day!<BR />";
+            }
+        }
+
+        // set time to noon
+        $resultDateTime = DateTime::createFromFormat('U', $resultDeadlineTimestamp);
+		$resultDateTime->setTime(12, 00);
+		
+		echo "after setting the time, Order Too Late is: <b>" . $resultDateTime->format("F j, Y, g:i a") . "</b><BR/>";		
+
+        return $resultDateTime;
+	}
+	
 	function getLateOrderDeadline($deliveryTimestamp) {
 		echo " <BR/>";
 		echo "deliveryTimeStamp = " . date("F j, Y, g:i a", $deliveryTimestamp) . " <BR/>";
@@ -104,8 +138,7 @@ $layout = onepress_get_layout();
 		$resultDateTime = DateTime::createFromFormat('U', $resultTimestamp);
 		$resultDateTime->setTime(12, 00);
 
-		//->format("d/m/Y H:i:s"); 
-		echo "after setting the time, final result is: " . $resultDateTime->format("F j, Y, g:i a") . " <BR/>";
+		echo "after setting the time, order late is : <b>" . $resultDateTime->format("F j, Y, g:i a") . "</b><BR/>";
 
 		return $resultDateTime;
 	}

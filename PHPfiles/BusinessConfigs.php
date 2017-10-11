@@ -1,6 +1,8 @@
 <?php
 class BusinessConfigs {
 	const LatePenaltyChargeInDollars = 1.00;
+	
+	const ChangesDeadlineInBusinessDays = 2;
 
 	const Holidays = array(
 		"11/23/2017",
