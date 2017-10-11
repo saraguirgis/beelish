@@ -114,7 +114,7 @@ class ProductCalendar {
             foreach ($mealVariationIds as $currentVariationId) {
                 $productVariation = wc_get_product($currentVariationId);
                 $RegPrice = $productVariation->get_regular_price();
-                $lateprice = $RegPrice + 1;
+                $lateprice = $RegPrice + BusinessConfigs::LatePenaltyChargeInDollars;
                 update_post_meta($currentVariationId, '_regular_price', $lateprice);
                 wc_delete_product_transients($currentVariationId);
             }
@@ -136,7 +136,7 @@ class ProductCalendar {
 		}
 					
 		//Subtract a day for the holidays
-		foreach(CalendarEntries::Holidays as $holiday){
+		foreach(BusinessConfigs::Holidays as $holiday){
 			$time_stamp=strtotime($holiday);
 		
 			//If the holiday doesn't fall in weekend, move back change deadline by a day

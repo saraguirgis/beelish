@@ -1,5 +1,7 @@
 <?php
-class CalendarEntries {
+class BusinessConfigs {
+	const LatePenaltyChargeInDollars = 1.00;
+
 	const Holidays = array(
 		"11/23/2017",
 		"12/25/2017",

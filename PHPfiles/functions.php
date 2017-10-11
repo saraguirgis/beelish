@@ -1,6 +1,6 @@
 <?php
 include "Constants.php";
-
+include "BusinessConfigs.php";
 
 /* Display product in calendar menu view */
 
@@ -246,8 +246,9 @@ function remove_expired_meal_from_cart($mealID) {
 	add_filter( 'woocommerce_after_add_to_cart_form','late_order_notice_price', 30);
 	
 	function late_order_notice_price() {
-		if (get_post_meta( get_the_ID(), 'timing_key', True) == 'kindalate') {
-			echo nl2br ( "<font color=\"#FF6600\">Note: $1 has been added for late orders</font>" );
+		if (get_post_meta( get_the_ID(), 'timing_key', True) == 'kindalate' &&
+		  BusinessConfigs::LatePenaltyChargeInDollars != 0) {
+			echo nl2br ( "<font color=\"#FF6600\">Note: $" . BusinessConfigs::LatePenaltyChargeInDollars . " has been added for late orders</font>" );
 		}
 	}
 
@@ -318,8 +319,6 @@ function remove_expired_meal_from_cart($mealID) {
  * @snippet       Remove irrelvant product data from product page
  * @visual product page hooks guide	https://businessbloomer.com/woocommerce-visual-hook-guide-single-product-page/#
  */
-
-
 		 
 	remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs', 10 );
 	remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_upsell_display', 15 );
@@ -330,5 +329,24 @@ function remove_expired_meal_from_cart($mealID) {
 	remove_action( 'woocommerce_review_meta', 'woocommerce_review_display_meta', 10 );
 	remove_action( 'woocommerce_review_comment_text', 'woocommerce_review_display_comment_text', 10 );
 
+
+	
+/**
+ * @snippet       Edit "successfully added to your cart"
+ * @how-to        Watch tutorial @ https://businessbloomer.com/?p=19055
+ * @sourcecode    https://businessbloomer.com/?p=494
+ * @author        Rodolfo Melogli
+ * @testedwith    WooCommerce 3.0.5
+ */
+ 
+	add_filter( 'wc_add_to_cart_message_html', 'bbloomer_custom_add_to_cart_message' );
+	 
+	function bbloomer_custom_add_to_cart_message() {
+	 
+	global $woocommerce;
+	$return_to  = get_permalink(205);
+	$message    = sprintf('<a href="%s" class="button wc-forwards">%s</a> %s', $return_to, __('Back to Menu', 'woocommerce'), __('Product successfully added to your cart.', 'woocommerce') );
+	return $message;
+}
 
 ?>
