@@ -349,4 +349,59 @@ function remove_expired_meal_from_cart($mealID) {
 	return $message;
 }
 
+
+/**
+ * @snippet       WooCommerce Add New Tab @ My Account
+ * @how-to        Watch tutorial @ https://businessbloomer.com/?p=19055
+ * @sourcecode    https://businessbloomer.com/?p=21253
+ * @credits       https://github.com/woothemes/woocommerce/wiki/2.6-Tabbed-My-Account-page
+ * @author        Rodolfo Melogli
+ * @testedwith    WooCommerce 2.6.7
+ */
+ 
+ 
+	// ------------------
+	// 1. Register new endpoint to use for My Account page
+	// Note: Resave Permalinks or it will give 404 error
+	
+	function bbloomer_add_user_profile_endpoint() {
+		add_rewrite_endpoint( 'user_profile', EP_ROOT | EP_PAGES );
+	}
+	
+	add_action( 'init', 'bbloomer_add_user_profile_endpoint' );
+	
+	
+	// ------------------
+	// 2. Add new query var
+	
+	function bbloomer_user_profile_query_vars( $vars ) {
+		$vars[] = 'user_profile';
+		return $vars;
+	}
+	
+	add_filter( 'query_vars', 'bbloomer_user_profile_query_vars', 0 );
+	
+	
+	// ------------------
+	// 3. Insert the new endpoint into the My Account menu
+	
+	function bbloomer_add_user_profile_link_my_account( $items ) {
+		$items['user_profile'] = 'My Profile';
+		return $items;
+	}
+	
+	add_filter( 'woocommerce_account_menu_items', 'bbloomer_add_user_profile_link_my_account' );
+	
+	
+	// ------------------
+	// 4. Add content to the new endpoint
+	
+	function bbloomer_user_profile_content() {
+	echo '<h3>My Profile</h3>';
+	echo do_shortcode( '[wpmem_profile]' );
+	}
+	
+	add_action( 'woocommerce_account_user_profile_endpoint', 'bbloomer_user_profile_content' );
+
+
 ?>
