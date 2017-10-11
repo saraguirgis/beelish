@@ -56,6 +56,11 @@ class ProductCalendar {
                 ProductCalendar::renderNoProductDetailsTableCell();
             } else {
                 $productDetails = wc_get_product($productId);
+
+                if (BusinessConfigs::ResetProductState) {
+                  ProductCalendar::resetProductState($productId, $productDetails);
+                }
+
                 $orderLateDateTime = ProductCalendar::getLateOrderDeadline(strtotime($productDetails->get_SKU()));
                 $orderTooLateDateTime = ProductCalendar::getTooLateOrderDeadline(strtotime($productDetails->get_SKU()));        
                 $productTimingKey = ProductCalendar::updateProductStateForTiming($productId, $productDetails, $orderLateDateTime, $orderTooLateDateTime);
@@ -69,6 +74,13 @@ class ProductCalendar {
         HtmlHelpers::writeTableEndTag();
         HtmlHelpers::writeBreakLine();
         HtmlHelpers::writeBreakLine();        
+    }
+
+    private static function resetProductState($productId, $productDetails) {
+        update_post_meta($productId, 'timing_key', ProductOrderTiming::OnTime);
+
+        // reset default inventory count
+        wc_update_product_stock($productId, BusinessConfigs::DefaultProductStockQuantity);
     }
 
     private static function renderNoLunchTableCell($productDate) {
@@ -105,8 +117,8 @@ class ProductCalendar {
             update_post_meta($productId, 'timing_key', ProductOrderTiming::KindaLate);
 
             // update product's inventory count
-            if ($productDetails->get_stock_quantity() > 50) {
-                wc_update_product_stock($productId, 50);
+            if ($productDetails->get_stock_quantity() > BusinessConfigs::ChangeWindowStockQuantity) {
+                wc_update_product_stock($productId, BusinessConfigs::ChangeWindowStockQuantity);
             }
 
             //Get and set new price for each variation of the parent product
