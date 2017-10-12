@@ -35,20 +35,11 @@ function getSelectedChildId() {
 		$_SESSION['selectedChildId'] = $_POST['childIdDropDown'];		
 	}
 
-	global $current_user;
-	$child1FirstName = $current_user->child1_fname;
-	$child1LastName  = $current_user->child1_lname;
-	$child2FirstName = $current_user->child2_fname;
-	$child2LastName  = $current_user->child2_lname;
-	$child3FirstName = $current_user->child3_fname;
-	$child3LastName  = $current_user->child3_lname;
-
 	$selectedChildId = $_SESSION['selectedChildId'] ?: 1;
-	
+	$children = getChildArray();
+
 	// validate that selected child id is a valid child
-	if (($selectedChildId == 2 && $child2FirstName == NULL && $child2LastName == NULL)
-	|| ($selectedChildId == 3 && $child3FirstName == NULL && $child3LastName == NULL) ||
-	$selectedChildId > 3) {
+	if ($children[$selectedChildId] == NULL || !$children[$selectedChildId]->isValid()) {
 		$selectedChildId = 1;
 	}
 
@@ -179,11 +170,8 @@ function remove_expired_meal_from_cart($mealID) {
 	add_filter( 'woocommerce_before_single_product', 'getAndDisplayChildName', 1, 2 );
 	
 	function getAndDisplayChildName() {
-		$selectedChildId = 1;
-		if (isset($_SESSION['selectedChildId'])) {
-			$selectedChildId = $_SESSION['selectedChildId'];
-		}
 		
+		$selectedChildId = getSelectedChildId();
 		$children = getChildArray();
 		echo "<h3>Ordering for " . $children[$selectedChildId]->getChildSelectionName() . "</h3>";
 	}
