@@ -1,7 +1,50 @@
 <?php
 include "Constants.php";
 include "BusinessConfigs.php";
+include "ChildDetails.php";
 
+$current_user = wp_get_current_user();
+
+function getChildArray() {
+	global $current_user;
+	$child1 = new ChildDetails(1, $current_user->child1_fname, $current_user->child1_lname, $current_user->child1_class);
+	$child2 = new ChildDetails(2, $current_user->child2_fname, $current_user->child2_lname, $current_user->child2_class);
+	$child3 = new ChildDetails(3, $current_user->child3_fname, $current_user->child3_lname, $current_user->child3_class);
+	
+	$children = array();
+
+	if ($child1->isValid()) {
+		$children[1] = $child1;
+	}
+
+	if ($child2->isValid()) {
+		$children[2] = $child2;
+	}
+
+	if ($child3->isValid()) {
+		$children[3] = $child3;
+	}
+
+	return $children;
+}
+
+
+function getSelectedChildId() {
+	// update session only if a new post is submitted
+	if (isset($_POST['childIdDropDown'])) {
+		$_SESSION['selectedChildId'] = $_POST['childIdDropDown'];		
+	}
+
+	$selectedChildId = $_SESSION['selectedChildId'] ?: 1;
+	$children = getChildArray();
+
+	// validate that selected child id is a valid child
+	if ($children[$selectedChildId] == NULL || !$children[$selectedChildId]->isValid()) {
+		$selectedChildId = 1;
+	}
+
+	return $selectedChildId;
+}
 	
 /* See if the product was already purchased.
  * Based on...
@@ -42,7 +85,7 @@ function remove_expired_meal_from_cart($mealID) {
             if( $cart_item['product_id'] == $mealID ) {
                 //Remove it from cart
 				WC()->cart->remove_cart_item($cart_item_key);
-				echo "<em>This item was removed from the cart since the ordering deadline has expired.</em>" . PHP_EOL;
+				echo "<em style=\"color: red;\">This item was removed from the cart since the ordering deadline has expired.</em>" . PHP_EOL;
 			}
     }
 }	
@@ -59,7 +102,7 @@ function remove_expired_meal_from_cart($mealID) {
 	function late_order_notice_price() {
 		if (get_post_meta( get_the_ID(), 'timing_key', True) == ProductOrderTiming::KindaLate &&
 		  BusinessConfigs::LatePenaltyChargeInDollars != 0) {
-			echo nl2br ( "<font color=\"#FF6600\">Note: $" . BusinessConfigs::LatePenaltyChargeInDollars . " has been added for late orders</font>" );
+			echo nl2br ( "<font color=\"#FF6600\">Note: $" . BusinessConfigs::LatePenaltyChargeInDollars . " has been added to the meal price for late orders</font>" );
 		}
 	}
 
@@ -70,7 +113,7 @@ function remove_expired_meal_from_cart($mealID) {
  * @visual product page hooks guide	https://businessbloomer.com/woocommerce-visual-hook-guide-single-product-page/#
 */
 	
-	add_action ( 'woocommerce_before_single_product','remove_add_to_cart_if_bought');
+	add_action ( 'woocommerce_before_single_product','remove_add_to_cart_if_bought', 10, 2);
 	
 	function remove_add_to_cart_if_bought() {	
 		//remove from cart if ordering is expired
@@ -124,6 +167,14 @@ function remove_expired_meal_from_cart($mealID) {
 		return $price;
 	}
 
+	add_filter( 'woocommerce_before_single_product', 'getAndDisplayChildName', 1, 2 );
+	
+	function getAndDisplayChildName() {
+		
+		$selectedChildId = getSelectedChildId();
+		$children = getChildArray();
+		echo "<h3>Ordering for " . $children[$selectedChildId]->getChildSelectionName() . "</h3>";
+	}
 
 
 /**
