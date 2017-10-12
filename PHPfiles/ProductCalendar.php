@@ -205,11 +205,11 @@ class ProductCalendar {
             HtmlHelpers::writeBreakLine();
         } elseif (meal_already_bought($productId) || meal_in_cart($productId)) {
             HtmlHelpers::writeParagraphStartTag("text-align:center;");
-            HtmlHelpers::writeAnchor($productDetails->get_permalink() . "?childId=$childId", "View details", "color: #9296A1;");
+            HtmlHelpers::writeAnchor($productDetails->get_permalink(), "View details", "color: #9296A1;");
             HtmlHelpers::writeParagraphEndTag();
         } else {
             HtmlHelpers::writeParagraphStartTag("text-align:center;");
-            HtmlHelpers::writeAnchorStartTag($productDetails->get_permalink() . "?childId=$childId");
+            HtmlHelpers::writeAnchorStartTag($productDetails->get_permalink());
             echo "<i class=\"fa fa-cutlery\" aria-hidden=\"true\"></i>&nbsp;Order";
             HtmlHelpers::writeAnchorEndTag();
             HtmlHelpers::writeBreakLine();

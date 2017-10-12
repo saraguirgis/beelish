@@ -63,30 +63,26 @@ function childIdDropDownOnChange(){
 
 
 	<?php
+
 	function renderChildDropDownMenu($selectedChildId) {
-		//TODO: change array value with real account data
-		$children = array(
-			1 => "Natalie Wahba",
-			2 => "Adriana Wahba",
-		);
+		$children = getChildArray();
 
 		echo "<form id=\"childSelectionForm\" method=\"post\" action=\"$PHP_SELF\">";
 		echo "<h2>Ordering for:  <select name=\"childIdDropDown\" onchange=\"childIdDropDownOnChange()\">";
 
-		foreach($children as $childId => $childName) {
-			echo "<option value=\"$childId\"";
-			if ($selectedChildId == $childId) {
+		foreach($children as $childDetails) {
+			echo "<option value=\"" . $childDetails->id . "\"";
+			if ($selectedChildId == $childDetails->id) {
 				echo " selected";
 			}
-			echo ">$childName</option>";
+			echo ">" . $childDetails->getChildSelectionName() . "</option>";
 		}
 
 		echo "  </select></h2>";
 		echo "</form>";
 	}
 
-	//TODO: validate proper childID
-	$selectedChildId = $_POST['childIdDropDown'] ?: 1;
+	$selectedChildId = getSelectedChildId();
 	renderChildDropDownMenu($selectedChildId);
 	?>
 
