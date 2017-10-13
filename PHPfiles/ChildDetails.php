@@ -43,5 +43,26 @@ class ChildDetails {
         
         return $name;
     }
+
+    /**
+     * Returns the display name for Child to be used in cart items in 
+     * the following format "Firstname L. in Classname"
+     * @return Child display name for cart item
+     */
+    public function getChildShortDisplayName() {
+        if ($this->firstName != NULL && $this->lastName != NULL) {
+            $name = $this->firstName . " " . substr($this->lastName, 0, 1) . ".";
+        } elseif ($this->firstName != NULL) {
+            $name = $this->firstName;
+        } elseif ($this->lastName != NULL) {
+            $name = $this->lastName;
+        }
+
+        if ($this->className != NULL) {
+            $name = $name . " in " . $this->className;
+        }
+
+        return $name;
+    }
 }
 ?>

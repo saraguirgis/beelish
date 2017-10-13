@@ -145,11 +145,12 @@ $layout = onepress_get_layout();
 		return $resultDateTime;
 	}
 
-	$current_user = wp_get_current_user();
-	
-	$child1FirstName = $current_user->child1_fname;
-	$child1LastName  = $current_user->child1_lname;
-	$child1ClassName = $current_user->child1_class;		
+	showChildShortName();
+
+	function showChildShortName() {
+		global $children;
+		echo "ChildName: " . $children[1]->getChildShortDisplayName() . " <BR><BR><BR>";
+	}
 
 ?>		
 			

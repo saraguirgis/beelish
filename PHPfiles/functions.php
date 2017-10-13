@@ -4,6 +4,7 @@ include "BusinessConfigs.php";
 include "ChildDetails.php";
 
 $current_user = wp_get_current_user();
+$children = getChildArray();
 
 function getChildArray() {
 	global $current_user;
@@ -35,8 +36,8 @@ function getSelectedChildId() {
 		$_SESSION['selectedChildId'] = $_POST['childIdDropDown'];		
 	}
 
+	global $children;
 	$selectedChildId = $_SESSION['selectedChildId'] ?: 1;
-	$children = getChildArray();
 
 	// validate that selected child id is a valid child
 	if ($children[$selectedChildId] == NULL || !$children[$selectedChildId]->isValid()) {
@@ -45,6 +46,7 @@ function getSelectedChildId() {
 
 	return $selectedChildId;
 }
+
 	
 /* See if the product was already purchased.
  * Based on...
@@ -66,9 +68,10 @@ function meal_already_bought($mealID) {
 function meal_in_cart($mealID) {
     foreach(WC()->cart->get_cart() as $key => $val ) {
         $_product = $val['data'];
- 
-        if("$mealID" == $_product->id ) {
-            Return TRUE;
+		$selectedChildId = getSelectedChildId();
+
+        if("$mealID" == $_product->id && $selectedChildId == $val['Child_ID'] ) {
+            return true;
         }
     }
     return false;
@@ -76,7 +79,6 @@ function meal_in_cart($mealID) {
 
 
 /* Remove a meal from the cart because it's ordering period has expired. */
-//TODO: update method to dynamically find product's children
 function remove_expired_meal_from_cart($mealID) {
 	global $woocommerce;
 	
@@ -171,8 +173,8 @@ function remove_expired_meal_from_cart($mealID) {
 	
 	function getAndDisplayChildName() {
 		
+		global $children;
 		$selectedChildId = getSelectedChildId();
-		$children = getChildArray();
 		echo "<h3>Ordering for " . $children[$selectedChildId]->getChildSelectionName() . "</h3>";
 	}
 
@@ -265,5 +267,76 @@ function remove_expired_meal_from_cart($mealID) {
 	
 	add_action( 'woocommerce_account_user_profile_endpoint', 'bbloomer_user_profile_content' );
 
+
+/***************ADD CUSTOM META TO CART & ORDER ITEMS ****************************************	
+/**
+ * @sourcecode    https://iconicwp.com/blog/add-custom-cart-item-data-woocommerce/
+ *
+ * Add ChildID to cart item
+ * @param array $cart_item_data
+ * @param int   $product_id
+ * @param int   $variation_id
+ *
+ * @return array
+ */
+
+ function iconic_add_childid_to_cart_item( $cart_item_data, $product_id, $variation_id ) {
+    global $children;
+	$childid = getSelectedChildId();
+ 	 
+    $cart_item_data['Child_ID'] = $childid;
+ 
+    return $cart_item_data;
+ }
+ 
+ add_filter( 'woocommerce_add_cart_item_data', 'iconic_add_childid_to_cart_item', 10, 3 );
+
+
+ /**
+ * Display childID in the cart.
+ *
+ * @param string $product_name
+ * @param array  $cart_item
+ * @param string $cart_item_key
+ *
+ * @return string
+ */
+function iconic_display_child_id_cart( $product_name, $cart_item, $cart_item_key ) {
+    if ( empty( $cart_item['Child_ID'] ) ) {
+        return $product_name;
+	}
+	
+	global $children;
+	$cartChildId = $cart_item['Child_ID'];
+
+    return sprintf( '%s <p><strong>%s</strong>: %s</p>', $product_name, __( 'For', 'iconic' ), $children[$cartChildId]->getChildShortDisplayName() );
+}
+ 
+add_filter( 'woocommerce_cart_item_name', 'iconic_display_child_id_cart', 10, 3 );
+
+
+/**
+ * Add childid to order.
+ *
+ * @param WC_Order_Item_Product $item
+ * @param string                $cart_item_key
+ * @param array                 $values
+ * @param WC_Order              $order
+ */
+ 
+function iconic_add_childid_to_order_items( $item, $cart_item_key, $values, $order ) {
+	global $children;
+	
+	// For order items, we will not add the child id as the meta data.  The actual child and class name should
+	// be added so that the user can show previous orders correctly even after updating current account info
+	// and children names
+
+	$orderChildId = $values['Child_ID'];
+	$childName = $children[$orderChildId]->getChildShortDisplayName();
+ 
+    $item->add_meta_data( __( 'For', 'iconic' ), $children[$orderChildId]->getChildShortDisplayName() );
+}
+ 
+add_action( 'woocommerce_checkout_create_order_line_item', 'iconic_add_childid_to_order_items', 10, 4 );	
 
 ?>

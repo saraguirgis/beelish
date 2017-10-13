@@ -65,7 +65,7 @@ function childIdDropDownOnChange(){
 	<?php
 
 	function renderChildDropDownMenu($selectedChildId) {
-		$children = getChildArray();
+		global $children;
 
 		echo "<form id=\"childSelectionForm\" method=\"post\" action=\"$PHP_SELF\">";
 		echo "<h2>Ordering for:  <select name=\"childIdDropDown\" onchange=\"childIdDropDownOnChange()\">";
