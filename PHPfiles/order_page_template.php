@@ -56,6 +56,7 @@ include "ProductCalendar.php";
 <script>
 function childIdDropDownOnChange(){
     document.getElementById("childSelectionForm").submit();
+	var div = document.getElementById("childLoading").style.display = "inline-block";
 }
 </script>
 
@@ -78,7 +79,8 @@ function childIdDropDownOnChange(){
 			echo ">" . $childDetails->getChildSelectionName() . "</option>";
 		}
 
-		echo "  </select></h2>";
+		echo "  </select>";
+		echo "<div id=\"childLoading\" style=\"display: none;\"><img style=\"padding-left: 10px; width:45px;\" src=\"" . get_stylesheet_directory_uri() . "/spinner.gif\" /><span style=\"font-size: 12px;\">loading...</span></div></h2>";
 		echo "</form>";
 	}
 
