@@ -241,7 +241,7 @@ class ProductCalendar {
 	
 	if ($alreadyorderedforname != NULL) {
 		foreach ($alreadyorderedforname as $key => $val) {
-			echo "<i class=\"fa fa-check\" aria-hidden=\"true\">Purchased for " . $val . "</i><BR />";
+			echo "<div class=\"user-bought\"><i class=\"fa fa-calendar-check-o\" aria-hidden=\"true\"></i> Purchased for " . $val . "</div>";
 		}	
 	}
 		

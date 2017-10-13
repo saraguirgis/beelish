@@ -34,8 +34,6 @@ $layout = onepress_get_layout();
 	global $woocommerce;
 	
 	
-	
-	
 	$alreadyorderedforname = array();
 	$alreadyorderedforname = names_meal_ordered_for('509');
 	

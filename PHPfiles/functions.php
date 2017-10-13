@@ -54,12 +54,16 @@ function getSelectedChildId() {
  * @sourcecode    https://businessbloomer.com/?p=20910
  * @author        Rodolfo Melogli
  */
-
+/***************** NO LONGER USED *****************/ 
 function meal_already_bought($mealID) {
 		$current_user = wp_get_current_user();
 		if ( wc_customer_bought_product( $current_user->user_email, $current_user->ID, "$mealID" ) ) 
 			return TRUE;
 }
+/***************** NO LONGER USED *****************/
+
+
+
 
 
 
@@ -67,19 +71,20 @@ function names_meal_ordered_for($mealID) {
     
     // Get all customer orders
     $customer_orders = get_posts( array(
-        'numberposts' => -1,
+        'numberposts' => -1, //($numberposts ( int ) optional – Total number of posts to retrieve. Is an alias of $posts_per_page in WP_Query. Accepts -1 for all. Default 5.
         'meta_key'    => '_customer_user',
         'meta_value'  => get_current_user_id(),
         'post_type'   => 'shop_order', // WC orders post type
         'post_status' => array( 'wc-processing', 'wc-completed' ) // Only orders with status "completed" or "processing"
     ) );
-	
+
+	$PurchasedForNames = array();
+		
     foreach ( $customer_orders as $customer_order ) {
         // Updated compatibility with WooCommerce 3+
         $order_id = method_exists( $order, 'get_id' ) ? $order->get_id() : $order->id;
         $order = wc_get_order( $customer_order );
 
-		$PurchasedForNames = array();
 		
         // Iterating through each current customer products bought in the order
         foreach ($order->get_items() as $item) {
