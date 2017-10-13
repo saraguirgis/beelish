@@ -203,7 +203,9 @@ class ProductCalendar {
             HtmlHelpers::writeInItalics("Ordering expired");
             HtmlHelpers::writeParagraphEndTag();
             HtmlHelpers::writeBreakLine();
-        } elseif (meal_already_bought($productId) || meal_in_cart($productId)) {
+        // commenting this out to remove "meal already bought" part since with multiple children we want them to be able to purchase again even if it was already bought
+		//} elseif (meal_already_bought($productId) || meal_in_cart($productId)) {
+		} elseif (meal_in_cart($productId)) {
             HtmlHelpers::writeParagraphStartTag("text-align:center;");
             HtmlHelpers::writeAnchor($productDetails->get_permalink(), "View details", "color: #9296A1;");
             HtmlHelpers::writeParagraphEndTag();
@@ -226,15 +228,25 @@ class ProductCalendar {
             }
         }
 
-        // display note if meal already bought
-        if (meal_already_bought($productId)) {
+        /* commenting this out to remove "meal already bought" part since with multiple children we want them to be able to purchase again even if it was already bought
+		if (meal_already_bought($productId)) {
     		$current_user = wp_get_current_user();
-            if ($current_user->child1_name == NULL) {
-                echo '<div class="user-bought"><mark style="background-color:#95D79E;"><i class="fa fa-calendar-check-o" aria-hidden="true"></i><i> Meal ordered</i></mark></div>';
-            } else {
-                echo '<div class="user-bought"><i>&checkmark; ' . $current_user->child1_name . ' ordered this.</i></div>';
-            }
-        } elseif (meal_in_cart($productId)) {
+
+            echo '<div class="user-bought"><i>&checkmark; ' . $current_user->child1_name . ' ordered this.</i></div>';
+
+		} */
+		
+		//Display who the meal was already purchased for if it was purchased
+		$alreadyorderedforname = names_meal_ordered_for($productId);
+	
+	if ($alreadyorderedforname != NULL) {
+		foreach ($alreadyorderedforname as $key => $val) {
+			echo "<i class=\"fa fa-check\" aria-hidden=\"true\">Purchased for " . $val . "</i><BR />";
+		}	
+	}
+		
+		
+        if (meal_in_cart($productId)) {
             // display note if meal is in the cart
             echo '<div class="user-bought"><mark><i class="fa fa-shopping-cart" aria-hidden="true"></i> Added to cart. Please <a href="https://www.beelish.com/cart/"><b>check out</b></a> to complete order.</mark></div>';
         }

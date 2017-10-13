@@ -63,6 +63,46 @@ function meal_already_bought($mealID) {
 
 
 
+function names_meal_ordered_for($mealID) {
+    
+    // Get all customer orders
+    $customer_orders = get_posts( array(
+        'numberposts' => -1,
+        'meta_key'    => '_customer_user',
+        'meta_value'  => get_current_user_id(),
+        'post_type'   => 'shop_order', // WC orders post type
+        'post_status' => array( 'wc-processing', 'wc-completed' ) // Only orders with status "completed" or "processing"
+    ) );
+	
+    foreach ( $customer_orders as $customer_order ) {
+        // Updated compatibility with WooCommerce 3+
+        $order_id = method_exists( $order, 'get_id' ) ? $order->get_id() : $order->id;
+        $order = wc_get_order( $customer_order );
+
+		$PurchasedForNames = array();
+		
+        // Iterating through each current customer products bought in the order
+        foreach ($order->get_items() as $item) {
+            // WC 3+ compatibility
+            if ( version_compare( WC_VERSION, '3.0', '<' ) ) 
+                $product_id = $item['product_id'];
+            else
+                $product_id = $item->get_product_id();
+			
+            // If the mealID matches to the product ID in the order, add the name of the child to the array
+            if ( $product_id == $mealID ) {
+                $PurchasedForNames[] = $item['For'];
+			}
+        }
+    }
+	
+    // return the names of the children for which this meal has been purchased
+    return $PurchasedForNames;
+}
+
+
+
+
 /* See if the product is in the cart. */
 
 function meal_in_cart($mealID) {
@@ -128,7 +168,9 @@ function remove_expired_meal_from_cart($mealID) {
 			remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40 );
 
 			remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30 );
-		} elseif ( meal_already_bought(get_the_ID()) || meal_in_cart(get_the_ID()) ) {
+		//Commented out this line since for multiple children ordering, we now want meals that are already bought to still be able to be purchased.
+		//} elseif ( meal_already_bought(get_the_ID()) || meal_in_cart(get_the_ID()) ) {
+		} elseif ( meal_in_cart(get_the_ID()) ) {
 			remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_rating', 10 );
 			remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40 );
 
@@ -316,7 +358,7 @@ add_filter( 'woocommerce_cart_item_name', 'iconic_display_child_id_cart', 10, 3 
 
 
 /**
- * Add childid to order.
+ * Add child name & class to order items.
  *
  * @param WC_Order_Item_Product $item
  * @param string                $cart_item_key
@@ -338,5 +380,24 @@ function iconic_add_childid_to_order_items( $item, $cart_item_key, $values, $ord
 }
  
 add_action( 'woocommerce_checkout_create_order_line_item', 'iconic_add_childid_to_order_items', 10, 4 );	
+
+
+
+
+/**
+ * Always redirect shop page to order page
+ *
+ * Source: https://stackoverflow.com/questions/40382876/forwarding-woocommerce-shop-page-to-another-page-on-a-site
+ */
+
+ function custom_shop_page_redirect() {
+    if( is_shop() ){
+        wp_redirect( get_permalink(205) );
+        exit();
+    }
+ }
+
+add_action( 'template_redirect', 'custom_shop_page_redirect' );
+
 
 ?>

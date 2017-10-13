@@ -32,11 +32,25 @@ $layout = onepress_get_layout();
 
 
 	global $woocommerce;
+	
+	
+	
+	
+	$alreadyorderedforname = array();
+	$alreadyorderedforname = names_meal_ordered_for('509');
+	
+	if ($alreadyorderedforname != NULL) {
+		foreach ($alreadyorderedforname as $key => $val) {
+			echo "Purchased for " . $val . "<BR />";
+		}
+	}		
+
+	
 	echo "this is the permalink for this page: " . get_permalink(257) . PHP_EOL;
 
 	echo "Constant TableHeaderBGColor: " . ThemeConstants::TableCellHeaderBGColor . "<BR />";
-
-
+	
+	
 	$_product = wc_get_product('170');
 	$MealVariationIDs = $_product->get_visible_children();
 	
