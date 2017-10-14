@@ -84,7 +84,7 @@ class ProductCalendar {
     }
 
     private static function renderNoLunchTableCell($productDate) {
-        $dateString = date_format(new DateTime($productDate), "M d, Y");
+        $dateString = date_format(new DateTime($productDate), "M d");
         HtmlHelpers::writeTableCell("$dateString <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
     }
 
