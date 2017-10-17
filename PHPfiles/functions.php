@@ -192,7 +192,9 @@ function remove_expired_meal_from_cart($mealID) {
 	}
 	
 	function print_no_dup_orders() {
-		echo '<em>Meal already purchased or in cart.</em>';
+		global $woocommerce;
+		$cart_url = $woocommerce->cart->get_cart_url();
+		echo '<font color="orange"><em><b>This meal is in your cart for the selected child.  <br><a href="' . get_permalink('205') . '">Add another meal</a> or <a href="' . $cart_url . '">check out</a> to complete your order.</b></em></font>';
 	}	
 	
 	
@@ -255,8 +257,10 @@ function remove_expired_meal_from_cart($mealID) {
 	function bbloomer_custom_add_to_cart_message() {
 	 
 	global $woocommerce;
+	$cart_url = $woocommerce->cart->get_cart_url();
 	$return_to  = get_permalink(205);
-	$message    = sprintf('<a href="%s" class="button wc-forwards">%s</a> %s', $return_to, __('Back to Menu', 'woocommerce'), __('Product successfully added to your cart.', 'woocommerce') );
+	$message    = sprintf('<a href="%s" class="button wc-forwards">%s</a> %s', $return_to, __('Back to Menu', 'woocommerce'), 
+					__('Product successfully added to your cart.  Add another meal or <a href=\"' . $cart_url . '\"><b>' . 'check out</a></b> to complete your order.', 'woocommerce') );
 	return $message;
 }
 

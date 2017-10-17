@@ -30,10 +30,10 @@ class BusinessConfigs {
 		"10/12/2017" => ProductCalendar::NoLunchProductId,
 		"10/13/2017" => ProductCalendar::NoLunchProductId,
 
-		"10/16/2017" => ProductCalendar::NoLunchProductId,
+		"10/16/2017" => 1100,
 		"10/17/2017" => ProductCalendar::NoLunchProductId,
 		"10/18/2017" => ProductCalendar::NoLunchProductId,
-		"10/19/2017" => ProductCalendar::NoLunchProductId,
+		"10/19/2017" => 1103,
 		"10/20/2017" => ProductCalendar::NoLunchProductId,
 
 		"10/23/2017" => ProductCalendar::NoLunchProductId,
