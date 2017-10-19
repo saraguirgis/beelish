@@ -33,11 +33,16 @@ function getChildArray() {
 function getSelectedChildId() {
 	// update session only if a new post is submitted
 	if (isset($_POST['childIdDropDown'])) {
-		$_SESSION['selectedChildId'] = $_POST['childIdDropDown'];		
+		
+		if ( ! session_id() ) {
+			session_name( 'LIVE_ORDERS_SESSION' );
+		}
+
+		WC()->session->set( 'selectedChildId' , $_POST['childIdDropDown']);
 	}
 
 	global $children;
-	$selectedChildId = $_SESSION['selectedChildId'] ?: 1;
+	$selectedChildId = WC()->session->get('selectedChildId') ?: 1;
 
 	// validate that selected child id is a valid child
 	if ($children[$selectedChildId] == NULL || !$children[$selectedChildId]->isValid()) {
@@ -243,7 +248,24 @@ function remove_expired_meal_from_cart($mealID) {
 	remove_action( 'woocommerce_review_comment_text', 'woocommerce_review_display_comment_text', 10 );
 
 
-	
+
+/* Remove Order Notes from checkout field in Woocommerce
+ * source https://clicknathan.com/web-design/remove-order-notes-woocommerce/
+ */
+
+	add_filter( 'woocommerce_enable_order_notes_field', '__return_false', 1);
+
+	add_filter( 'woocommerce_checkout_fields' , 'alter_woocommerce_checkout_fields' );
+
+	function alter_woocommerce_checkout_fields( $fields ) {
+		 //removing order comments with first filter so that "additional information" heading can be removed
+		 //unset($fields['order']['order_comments']);
+		 unset($fields['billing']['billing_company']);
+		 return $fields;
+	}
+
+
+
 /**
  * @snippet       Edit "successfully added to your cart"
  * @how-to        Watch tutorial @ https://businessbloomer.com/?p=19055
@@ -259,7 +281,7 @@ function remove_expired_meal_from_cart($mealID) {
 	global $woocommerce;
 	$cart_url = $woocommerce->cart->get_cart_url();
 	$return_to  = get_permalink(205);
-	$message    = sprintf('<a href="%s" class="button wc-forwards">%s</a> %s', $return_to, __('Back to Menu', 'woocommerce'), 
+	$message    = sprintf('<a href="%s" class="button wc-forwards">%s</a> %s', $return_to, __('Add another meal', 'woocommerce'), 
 					__('Product successfully added to your cart.  Add another meal or <a href=\"' . $cart_url . '\"><b>' . 'check out</a></b> to complete your order.', 'woocommerce') );
 	return $message;
 }

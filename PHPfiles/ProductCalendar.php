@@ -189,9 +189,10 @@ class ProductCalendar {
         HtmlHelpers::writeTableCellStartTag($tableCellStyle);
 
         // always show product image/title
+ /************** TEMPORARILY REMOVING IMAGE FROM CALENDAR VIEW **********************
         echo $productDetails->get_image(array(80, 128));
         HtmlHelpers::writeBreakLine();
-
+***********************************************************/
         echo $productDetails->get_title();
         HtmlHelpers::writeBreakLine();
         HtmlHelpers::writeBreakLine();
@@ -241,7 +242,7 @@ class ProductCalendar {
 	
 	if ($alreadyorderedforname != NULL) {
 		foreach ($alreadyorderedforname as $key => $val) {
-			echo "<div class=\"user-bought\"><i class=\"fa fa-calendar-check-o\" aria-hidden=\"true\"></i> Purchased for " . $val . "</div>";
+			echo "<div class=\"user-bought\"><i class=\"fa fa-calendar-check-o\" aria-hidden=\"true\"></i><font color=\"#FF7700\"> Purchased for " . $val . "</font></div>";
 		}	
 	}
 		

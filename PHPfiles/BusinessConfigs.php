@@ -18,23 +18,23 @@ class BusinessConfigs {
 		"01/01/2017");
 	
     const OctoberProducts = array(
-		"10/02/2017" => ProductCalendar::NoLunchProductId,
-		"10/03/2017" => ProductCalendar::NoLunchProductId,
-		"10/04/2017" => ProductCalendar::NoLunchProductId,
-		"10/05/2017" => ProductCalendar::NoLunchProductId,
-		"10/06/2017" => ProductCalendar::NoLunchProductId,
+	//	"10/02/2017" => ProductCalendar::NoLunchProductId,
+	//	"10/03/2017" => ProductCalendar::NoLunchProductId,
+	//	"10/04/2017" => ProductCalendar::NoLunchProductId,
+	//	"10/05/2017" => ProductCalendar::NoLunchProductId,
+	//	"10/06/2017" => ProductCalendar::NoLunchProductId,
 
-		"10/09/2017" => ProductCalendar::NoLunchProductId,
-		"10/10/2017" => ProductCalendar::NoLunchProductId,
-		"10/11/2017" => ProductCalendar::NoLunchProductId,
-		"10/12/2017" => ProductCalendar::NoLunchProductId,
-		"10/13/2017" => ProductCalendar::NoLunchProductId,
+	//	"10/09/2017" => ProductCalendar::NoLunchProductId,
+	//	"10/10/2017" => ProductCalendar::NoLunchProductId,
+	//	"10/11/2017" => ProductCalendar::NoLunchProductId,
+	//	"10/12/2017" => ProductCalendar::NoLunchProductId,
+	//	"10/13/2017" => ProductCalendar::NoLunchProductId,
 
-		"10/16/2017" => 1100,
-		"10/17/2017" => ProductCalendar::NoLunchProductId,
-		"10/18/2017" => ProductCalendar::NoLunchProductId,
-		"10/19/2017" => 1103,
-		"10/20/2017" => ProductCalendar::NoLunchProductId,
+	//	"10/16/2017" => ProductCalendar::NoLunchProductId,
+	//	"10/17/2017" => ProductCalendar::NoLunchProductId,
+	//	"10/18/2017" => ProductCalendar::NoLunchProductId,
+	//	"10/19/2017" => ProductCalendar::NoLunchProductId,
+	//	"10/20/2017" => ProductCalendar::NoLunchProductId,
 
 		"10/23/2017" => ProductCalendar::NoLunchProductId,
 		"10/24/2017" => ProductCalendar::NoLunchProductId,

@@ -7,7 +7,7 @@
 ?>
 
 <HEAD>
-<META HTTP-EQUIV="refresh" CONTENT="0;URL=https://www.beelish.com/about/terms-and-conditions/">
+<META HTTP-EQUIV="refresh" CONTENT="0;URL=https://www.beelish.com/about/terms-of-service/">
 </HEAD>
 
 <div id="content" class="site-content">
