@@ -31,7 +31,16 @@ $layout = onepress_get_layout();
 		
 <?php
 
+$_product = wc_get_product( '975' );
+$shortdesc = $_product->post->post_excerpt;
+echo $shortdesc . "<br><br>" ;
 
+echo "This is the hover test: <a href=\"http://beelish.com/\" title=\"". $shortdesc . "\">link</a><br><br>";
+
+
+
+
+//test other stuff...
 	global $woocommerce;
 	
 	
@@ -45,7 +54,7 @@ $layout = onepress_get_layout();
 	}		
 
 	
-	echo "this is the permalink for this page: " . get_permalink(257) . PHP_EOL;
+	echo "this is the permalink for page 257: " . get_permalink(257) . PHP_EOL;
 
 	echo "<br>Constant TableHeaderBGColor: " . ThemeConstants::TableCellHeaderBGColor . "<BR />";
 

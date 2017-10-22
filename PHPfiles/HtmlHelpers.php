@@ -34,16 +34,24 @@ class HtmlHelpers {
     /**
      * Writes an HTML anchor start tag.
      * @param string $linkRef Address of link.
+     * @param string $title (Optional) Hover text.
      * @param string $style (Optional) Anchcor style.
      */
-    public static function writeAnchorStartTag($linkRef, $style = null) {
+    public static function writeAnchorStartTag($linkRef, $title = null, $style = null) {
         echo "<a";
 
         // write style contents if provided
         if ($style !== null) {
             echo " style=\"$style\"";
         }
+
+        // write hover contents if provided
+        if ($title !== null) {
+            echo " title=\"$title\"";
+        }
+
         echo " href=\"$linkRef\">";
+
     }
 
     /**

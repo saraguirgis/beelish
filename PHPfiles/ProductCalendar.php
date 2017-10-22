@@ -212,7 +212,7 @@ class ProductCalendar {
             HtmlHelpers::writeParagraphEndTag();
         } else {
             HtmlHelpers::writeParagraphStartTag("text-align:center;");
-            HtmlHelpers::writeAnchorStartTag($productDetails->get_permalink());
+            HtmlHelpers::writeAnchorStartTag($productDetails->get_permalink(), $productDetails->post->post_excerpt);
             echo "<i class=\"fa fa-cutlery\" aria-hidden=\"true\"></i>&nbsp;Order";
             HtmlHelpers::writeAnchorEndTag();
             HtmlHelpers::writeBreakLine();

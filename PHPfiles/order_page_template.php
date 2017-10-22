@@ -18,8 +18,12 @@ include "ProductCalendar.php";
   <div class="page-header">
     <div class="container">
     <?php  
+		// Welcome message to user using their first name in the page title bar
+		echo "<p style=\"text-align:right;\">Welcome, " . $current_user->first_name . "!<span style=\"float:left;\">";
+		//page title
 		the_title( '<h1 class="entry-title">', '</h1>' );
-	?>  
+		echo "</span></p>";
+?>  
 	  
     </div>
   </div>
@@ -56,13 +60,6 @@ function childIdDropDownOnChange(){
 
   <!-- TODO: Replace with account data -->
 
- 	<?php
-	
-	// Welcome message to user using their first name
-
-		echo '<p align="right">Welcome, ' . $current_user->first_name . '!</p>'; 
-	?>
-
 	<?php
 	
 // display upcoming order deadline
@@ -71,9 +68,10 @@ function childIdDropDownOnChange(){
 	$displayorderweekstart = strtotime("+6 days", $displaydeadline);
 	$displayorderweekend = strtotime("+4 days", $displayorderweekstart);
 
-	echo "<h5>Upcoming Order Deadline:</h5> Order meals by <b><font color=\"#3ab44a\"> ". date("D, M j", $displaydeadline ) . 
-		" at noon</b></font> for the week of <b>" . date("M j", $displayorderweekstart ) . " - " . date("M j", $displayorderweekend ) . 
-		"</b>.<font size=\"-1\"><BR><i>More about order deadlines, pricing, and other information <a href=\"beelish.com/ordering-info\">here</a>.</i><br><BR><br>";
+	echo "<h5><i class=\"fa fa-hourglass-half\" aria-hidden=\"true\"></i>  Upcoming Deadline:</h5>Order meals by <b><font color=\"#3ab44a\"> ".
+		 date("D, M j", $displaydeadline ) . 
+		 " at noon</b></font> for the week of <b>" . date("M j", $displayorderweekstart ) . " - " . date("M j", $displayorderweekend ) . 
+		 "</b>.<font size=\"-1\"><BR><i class=\"fa fa-star\" aria-hidden=\"true\"></i> <i>More about timing, pricing, and other information <a href=\"http://www.beelish.com/ordering-info\">here</a>.</i><br><BR><br>";
 
 
 
@@ -83,7 +81,7 @@ function childIdDropDownOnChange(){
 		global $children;
 
 		echo "<form id=\"childSelectionForm\" method=\"post\" action=\"$PHP_SELF\">";
-		echo "<h5>Ordering for:  <select name=\"childIdDropDown\" onchange=\"childIdDropDownOnChange()\">";
+		echo "<h5>You are ordering for:  <select name=\"childIdDropDown\" onchange=\"childIdDropDownOnChange()\">";
 
 		foreach($children as $childDetails) {
 			echo "<option value=\"" . $childDetails->id . "\"";
@@ -96,7 +94,7 @@ function childIdDropDownOnChange(){
 		echo "  </select>";
 		echo "<div id=\"childLoading\" style=\"display: none;\"><img style=\"padding-left: 10px; width:45px;\" src=\"" . 
 			get_stylesheet_directory_uri() . "/spinner.gif\" /><span style=\"font-size: 12px;\">loading...</span></div></h5>";
-		echo "</form>";
+		echo "</form><BR>";
 	}
 
 	$selectedChildId = getSelectedChildId();
