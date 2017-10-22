@@ -222,7 +222,7 @@ class ProductCalendar {
             if ($productTimingKey == ProductOrderTiming::KindaLate) {
                 HtmlHelpers::writeParagraphStartTag("color: #FF6600;");
                 echo "<i class=\"fa fa-clock-o fa-lg\" aria-hidden=\"true\"></i>&nbsp;";
-                HtmlHelpers::writeInItalics("Order last minute until");
+                HtmlHelpers::writeInItalics("Late orders accepted until");
                 HtmlHelpers::writeBreakLine();
                 HtmlHelpers::writeInItalics(date('D, M d', $orderTooLateDateTime->getTimestamp()) . " at noon");
                 HtmlHelpers::writeParagraphEndTag();    

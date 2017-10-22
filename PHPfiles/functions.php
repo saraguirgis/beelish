@@ -265,7 +265,6 @@ function remove_expired_meal_from_cart($mealID) {
 	}
 
 
-
 /**
  * @snippet       Edit "successfully added to your cart"
  * @how-to        Watch tutorial @ https://businessbloomer.com/?p=19055

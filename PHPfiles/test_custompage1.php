@@ -27,7 +27,8 @@ $layout = onepress_get_layout();
 				<main id="main" class="site-main" role="main">
 
 			
-			
+		
+		
 <?php
 
 
@@ -46,50 +47,8 @@ $layout = onepress_get_layout();
 	
 	echo "this is the permalink for this page: " . get_permalink(257) . PHP_EOL;
 
-	echo "Constant TableHeaderBGColor: " . ThemeConstants::TableCellHeaderBGColor . "<BR />";
-	
-	
-	$_product = wc_get_product('170');
-	$MealVariationIDs = $_product->get_visible_children();
-	
-	foreach ($MealVariationIDs as $CurrentVariationID) {
+	echo "<br>Constant TableHeaderBGColor: " . ThemeConstants::TableCellHeaderBGColor . "<BR />";
 
-		echo "Variation ID: $CurrentVariationID<BR />";
-		$_product = wc_get_product($CurrentVariationID);
-		$RegPrice = $_product->get_regular_price();
-
-		echo "->Current Price: $RegPrice<BR />";
-
-		$lateprice = $RegPrice + 1;
-		update_post_meta($CurrentVariationID, '_regular_price', $lateprice);
-		wc_delete_product_transients( $CurrentVariationID );
-	
-		$_product = wc_get_product($CurrentVariationID);
-		echo "->Updated Price: " . $_product->get_regular_price() . "<BR />";
-}
-
-/*
-	//Get and set new price
-		$var1_prodID = $mealID + 1;
-		$var2_prodID = $mealID + 2;
-          
-		//Variant1 Update
-		$_product = wc_get_product($var1_prodID);
-		$RegPrice = $_product->get_regular_price();
-		$lateprice = $RegPrice + 1;
-		update_post_meta($var1_prodID, '_regular_price', $lateprice);
-		wc_delete_product_transients( $var1_prodID );
-			
-		//Variant2 Update
-		$_product = wc_get_product($var2_prodID);
-		$RegPrice = $_product->get_regular_price();
-		$lateprice = $RegPrice + 1;
-		update_post_meta($var2_prodID, '_regular_price', $lateprice);
-		wc_delete_product_transients( $var2_prodID );
-		
-		//Reset Product Variable
-		$_product = wc_get_product($mealID);
-*/
 
 
 	$productSku = "2017-10-23";
@@ -167,8 +126,17 @@ $layout = onepress_get_layout();
 ?>		
 			
 			
-			
-			
+<?php
+// test displaying order deadline
+	
+	$displaydeadline = strtotime("next Tuesday");
+	$displayorderweekstart = strtotime("+6 days", $displaydeadline);
+	$displayorderweekend = strtotime("+4 days", $displayorderweekstart);
+	
+	echo "<h5>Next Ordering Deadline:</h5> Order meals by <b><font color=\"#3ab44a\"> ". date("D, M j", $displaydeadline ) . 
+		" at noon</b></font> for the week of <b>" . date("M j", $displayorderweekstart ) . " - " . date("M j", $displayorderweekend ) . "</b> <BR><BR><BR>";
+
+?>
 
 			
 					

@@ -32,12 +32,6 @@ include "ProductCalendar.php";
       <main id="main" class="site-main" role="main">
 
 	  
-	<!-- Welcome message to user just above menu -->
-	  	<?php
-			echo '<p align="right">Welcome, ' . $current_user->first_name . '!</p>'; 
-		?>
-	
-
 	<!-- Any text in WP Admin Page -->
 	  
 					<?php while ( have_posts() ) : the_post(); ?>
@@ -62,14 +56,34 @@ function childIdDropDownOnChange(){
 
   <!-- TODO: Replace with account data -->
 
+ 	<?php
+	
+	// Welcome message to user using their first name
+
+		echo '<p align="right">Welcome, ' . $current_user->first_name . '!</p>'; 
+	?>
 
 	<?php
+	
+// display upcoming order deadline
+	
+	$displaydeadline = strtotime("next Tuesday");
+	$displayorderweekstart = strtotime("+6 days", $displaydeadline);
+	$displayorderweekend = strtotime("+4 days", $displayorderweekstart);
+
+	echo "<h5>Upcoming Order Deadline:</h5> Order meals by <b><font color=\"#3ab44a\"> ". date("D, M j", $displaydeadline ) . 
+		" at noon</b></font> for the week of <b>" . date("M j", $displayorderweekstart ) . " - " . date("M j", $displayorderweekend ) . 
+		"</b>.<font size=\"-1\"><BR><i>More about order deadlines, pricing, and other information <a href=\"beelish.com/ordering-info\">here</a>.</i><br><BR><br>";
+
+
+
+// display child drop down
 
 	function renderChildDropDownMenu($selectedChildId) {
 		global $children;
 
 		echo "<form id=\"childSelectionForm\" method=\"post\" action=\"$PHP_SELF\">";
-		echo "<h2>Ordering for:  <select name=\"childIdDropDown\" onchange=\"childIdDropDownOnChange()\">";
+		echo "<h5>Ordering for:  <select name=\"childIdDropDown\" onchange=\"childIdDropDownOnChange()\">";
 
 		foreach($children as $childDetails) {
 			echo "<option value=\"" . $childDetails->id . "\"";
@@ -80,17 +94,17 @@ function childIdDropDownOnChange(){
 		}
 
 		echo "  </select>";
-		echo "<div id=\"childLoading\" style=\"display: none;\"><img style=\"padding-left: 10px; width:45px;\" src=\"" . get_stylesheet_directory_uri() . "/spinner.gif\" /><span style=\"font-size: 12px;\">loading...</span></div></h2>";
+		echo "<div id=\"childLoading\" style=\"display: none;\"><img style=\"padding-left: 10px; width:45px;\" src=\"" . 
+			get_stylesheet_directory_uri() . "/spinner.gif\" /><span style=\"font-size: 12px;\">loading...</span></div></h5>";
 		echo "</form>";
 	}
 
 	$selectedChildId = getSelectedChildId();
 	renderChildDropDownMenu($selectedChildId);
-	?>
 
-<!-- Menu Table -->
 
-<?php
+
+// Display Menu Tables
 
 $octoberCalendar = new ProductCalendar("October 2017", BusinessConfigs::OctoberProducts, $selectedChildId);
 $octoberCalendar->renderCalendar();
