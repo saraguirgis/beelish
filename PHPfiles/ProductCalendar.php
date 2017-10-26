@@ -24,7 +24,7 @@ class ProductCalendar {
         $this->childId = $childId;
     }
 
-    function renderCalendar() {        
+    function renderCalendar() {
         // Write month title
         HtmlHelpers::writeH2($this->calendarTitle);
 
