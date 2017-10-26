@@ -24,7 +24,7 @@ class ProductCalendar {
         $this->childId = $childId;
     }
 
-    function renderCalendar() {
+    function renderCalendar() {        
         // Write month title
         HtmlHelpers::writeH2($this->calendarTitle);
 
@@ -85,7 +85,7 @@ class ProductCalendar {
 
     private static function renderNoLunchTableCell($productDate) {
         $dateString = date_format(new DateTime($productDate), "M d");
-        HtmlHelpers::writeTableCell("$dateString <p><i>No lunch</i></p>", ThemeConstants::TableCellNothingToOrderStyle);
+        HtmlHelpers::writeTableCell("$dateString - No lunch", ThemeConstants::TableCellNothingToOrderStyle);
     }
 
     private static function renderNoProductDetailsTableCell() {
@@ -93,6 +93,7 @@ class ProductCalendar {
     }
 
     private static function updateProductStateForTiming($productId, $productDetails, $orderLateDateTime, $orderTooLateDateTime) {
+
         $productTimingKey = get_post_meta($productId, 'timing_key', true);
 
         if ($productTimingKey == ProductOrderTiming::TooLate) {
@@ -100,7 +101,7 @@ class ProductCalendar {
             return ProductOrderTiming::TooLate;
         }
 
-        if ($productTimingKey == ProductOrderTiming::KindaLate) {
+        if ($productTimingKey == ProductOrderTiming::KindaLate) {            
             // check if it's too late to order
             if (time() > $orderTooLateDateTime->getTimestamp()) {
                 update_post_meta($productId, 'timing_key', ProductOrderTiming::TooLate);
@@ -154,9 +155,9 @@ class ProductCalendar {
             }
         }
 
-        // set time to noon
+        // set time to noon relative to UTC
         $resultDateTime = DateTime::createFromFormat('U', $resultDeadlineTimestamp);
-        $resultDateTime->setTime(12, 00);
+        $resultDateTime->setTime(19, 00);
 
         return $resultDateTime;
     }
@@ -173,9 +174,9 @@ class ProductCalendar {
         // go to Tuesday of previous week
         $resultTimestamp = strtotime("last Tuesday", $resultTimestamp);
 
-        // set time to noon
+        // set time to noon relative to UTC
         $resultDateTime = DateTime::createFromFormat('U', $resultTimestamp);
-        $resultDateTime->setTime(12, 00);
+        $resultDateTime->setTime(19, 00);
 
         return $resultDateTime;
     }
@@ -242,7 +243,7 @@ class ProductCalendar {
 	
 	if ($alreadyorderedforname != NULL) {
 		foreach ($alreadyorderedforname as $key => $val) {
-			echo "<div class=\"user-bought\"><i class=\"fa fa-calendar-check-o\" aria-hidden=\"true\"></i><font color=\"#FF7700\"> Purchased for " . $val . "</font></div>";
+			echo "<div class=\"user-bought\"><i class=\"fa fa-calendar-check-o\" aria-hidden=\"true\"></i><em> Purchased for " . $val . "</em></div>";
 		}	
 	}
 		

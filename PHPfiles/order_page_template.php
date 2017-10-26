@@ -81,7 +81,7 @@ function childIdDropDownOnChange(){
 		global $children;
 
 		echo "<form id=\"childSelectionForm\" method=\"post\" action=\"$PHP_SELF\">";
-		echo "<h5>You are ordering for:  <select name=\"childIdDropDown\" onchange=\"childIdDropDownOnChange()\">";
+		echo "<h5 style=\"line-height:40px;\">You are ordering for:  <select name=\"childIdDropDown\" onchange=\"childIdDropDownOnChange()\">";
 
 		foreach($children as $childDetails) {
 			echo "<option value=\"" . $childDetails->id . "\"";
