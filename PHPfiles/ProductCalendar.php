@@ -101,7 +101,7 @@ class ProductCalendar {
             return ProductOrderTiming::TooLate;
         }
 
-        if ($productTimingKey == ProductOrderTiming::KindaLate) {            
+        if ($productTimingKey == ProductOrderTiming::KindaLate) {
             // check if it's too late to order
             if (time() > $orderTooLateDateTime->getTimestamp()) {
                 update_post_meta($productId, 'timing_key', ProductOrderTiming::TooLate);
