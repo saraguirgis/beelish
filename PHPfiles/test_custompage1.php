@@ -1,5 +1,7 @@
 <?php /* Template Name: CustomPageT1 */ 
 
+date_default_timezone_set('America/Los_Angeles');
+
 //errors out because of declaring theme constants
 	//include "Constants.php";
 	include "TimeHelpers.php";
@@ -37,7 +39,7 @@ echo $shortdesc . "<br><br>" ;
 
 echo "This is the hover test: <a href=\"http://beelish.com/\" title=\"". $shortdesc . "\">link</a><br><br>";
 
-
+echo "This is the current time: " . time() . "<br />";
 
 
 //test other stuff...
@@ -59,48 +61,71 @@ echo "This is the hover test: <a href=\"http://beelish.com/\" title=\"". $shortd
 	echo "<br>Constant TableHeaderBGColor: " . ThemeConstants::TableCellHeaderBGColor . "<BR />";
 
 
+	$timezone = date_default_timezone_get();
+	echo "The current server timezone is: " . $timezone;
+	
+	$date = date('m/d/Y h:i:s a', time());
+	echo "<br>current time is: " . $date;
 
-	$productSku = "2017-10-23";
+
+
+
+	$productSku = "2017-10-30";
+
+	$resultTimestamp = strtotime("last Tuesday", $productSku);
+	$resultTimeStampFormatted = date('m/d/Y h:i:s a', $resultTimestamp);
+
+	echo "<br /><br /><br />";
+	$theTime = time();
+	echo "time is $theTime<br />";
+	echo "resulttimestamp $resultTimestamp<br />";
+	echo "resultTimeStampFormatted $resultTimeStampFormatted<br />";
+	
+
+
 	// echo "productSku = " . $productSku . " <BR/>";
 	// echo "productsku timestamp = " . date("F j, Y, g:i a", strtotime($productSku)) . " <BR/>";
 	
 	$orderLateDateTime = getLateOrderDeadline(strtotime($productSku));
 	$orderTooLateDateTime = getTooLateOrderDeadline(strtotime($productSku));
 
+	$logPrefix = "[$productSku]: ";
+	$currentTime = date('m/d/Y h:i:s a', time());
+	$tooLateTime = $orderTooLateDateTime->format('m/d/Y h:i:s a');
+	debug_to_console("$logPrefix Time Is: " . $currentTime);
+	debug_to_console("$logPrefix orderTooLateDateTime->getTimestamp(): " . $tooLateTime);
+	$tempIsTooLate = (time() > $orderTooLateDateTime->getTimestamp()) ? "true" : "false";
+	debug_to_console("$logPrefix time > order too late is: $tempIsTooLate");
+
+
 	if (time() > $orderTooLateDateTime->getTimestamp()) {
 		echo "current time is larger than too late date <BR />";
 	}
+	
 
 	function getTooLateOrderDeadline($deliveryTimestamp) {
-		echo " <BR/>";
-		echo "deliveryTimeStamp = " . date("F j, Y, g:i a", $deliveryTimestamp) . " <BR/>";
         
         $businessDaysToSubtract = BusinessConfigs::ChangesDeadlineInBusinessDays;
 
         $resultDeadlineTimestamp = $deliveryTimestamp;
 
         while ($businessDaysToSubtract > 0) {
-			$resultDeadlineTimestamp = strtotime("yesterday", $resultDeadlineTimestamp);
-			
-			echo "subtract one day gets me to: " . date("F j, Y, g:i a", $resultDeadlineTimestamp) . " <BR/>";
+            $resultDeadlineTimestamp = strtotime("yesterday", $resultDeadlineTimestamp);
 
             // only make it count if it was a business day
             if (!TimeHelpers::isWeekend($resultDeadlineTimestamp)
              && !TimeHelpers::isHoliday(BusinessConfigs::Holidays, $resultDeadlineTimestamp)) {
-				$businessDaysToSubtract--;
-				echo "this was a business day!<BR />";
+                $businessDaysToSubtract--;
             }
         }
 
         // set time to noon
         $resultDateTime = DateTime::createFromFormat('U', $resultDeadlineTimestamp);
-		$resultDateTime->setTime(12, 00);
-		
-		echo "after setting the time, Order Too Late is: <b>" . $resultDateTime->format("F j, Y, g:i a") . "</b><BR/>";		
+        $resultDateTime->setTime(19, 00);
 
         return $resultDateTime;
 	}
-	
+
 	function getLateOrderDeadline($deliveryTimestamp) {
 		echo " <BR/>";
 		echo "deliveryTimeStamp = " . date("F j, Y, g:i a", $deliveryTimestamp) . " <BR/>";
@@ -118,7 +143,7 @@ echo "This is the hover test: <a href=\"http://beelish.com/\" title=\"". $shortd
 
 		// set time to noon
 		$resultDateTime = DateTime::createFromFormat('U', $resultTimestamp);
-		$resultDateTime->setTime(12, 00);
+		$resultDateTime->setTime(19, 00);
 
 		echo "after setting the time, order late is : <b>" . $resultDateTime->format("F j, Y, g:i a") . "</b><BR/>";
 

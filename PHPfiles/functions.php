@@ -6,6 +6,14 @@ include "ChildDetails.php";
 $current_user = wp_get_current_user();
 $children = getChildArray();
 
+function debug_to_console( $data ) {
+    $output = $data;
+    if ( is_array( $output ) )
+        $output = implode( ',', $output);
+
+    echo "<script>console.log( 'Debug Objects: " . $output . "' );</script>";
+}
+
 function getChildArray() {
 	global $current_user;
 	$child1 = new ChildDetails(1, $current_user->child1_fname, $current_user->child1_lname, $current_user->child1_class);
