@@ -110,7 +110,7 @@ class ProductCalendar {
             return ProductOrderTiming::KindaLate;
         } 
         
-        // product currently marked ontime, check if it's kindda late, or too late
+        // product currently marked ontime, check if it's kinda late, or too late
         if (time() < $orderLateDateTime->getTimestamp()) {
             return ProductOrderTiming::OnTime;
         } elseif (time() < $orderTooLateDateTime->getTimestamp()) {
@@ -143,21 +143,37 @@ class ProductCalendar {
         
         $businessDaysToSubtract = BusinessConfigs::ChangesDeadlineInBusinessDays;
 
-        $resultDeadlineTimestamp = $deliveryTimestamp;
+        //if Tuesday
+        if (date( N , $deliveryTimestamp) == 2) {
 
-        while ($businessDaysToSubtract > 0) {
-            $resultDeadlineTimestamp = strtotime("yesterday", $resultDeadlineTimestamp);
+            //set deadline to previous Sunday
+            $resultDeadlineTimestamp = strtotime("last Sunday", $deliveryTimestamp);
+            
+            //set time to 9pm
+            $resultDeadlineTimestamp = $resultDeadlineTimestamp + 75600;
 
-            // only make it count if it was a business day
-            if (!TimeHelpers::isWeekend($resultDeadlineTimestamp)
-             && !TimeHelpers::isHoliday(BusinessConfigs::Holidays, $resultDeadlineTimestamp)) {
-                $businessDaysToSubtract--;
+            $resultDateTime = new DateTime;
+            $resultDateTime->setTimestamp($resultDeadlineTimestamp);
+        
+        } else {
+            //set deadline to the change deadline in Business Configs
+            $resultDeadlineTimestamp = $deliveryTimestamp;
+
+            while ($businessDaysToSubtract > 0) {
+                $resultDeadlineTimestamp = strtotime("yesterday", $resultDeadlineTimestamp);
+
+                // only make it count if it was a business day
+                if (!TimeHelpers::isWeekend($resultDeadlineTimestamp)
+                && !TimeHelpers::isHoliday(BusinessConfigs::Holidays, $resultDeadlineTimestamp)) {
+                    $businessDaysToSubtract--;
+                }
             }
+            
+            // set time to noon relative to UTC
+            $resultDateTime = DateTime::createFromFormat('U', $resultDeadlineTimestamp);
+            $resultDateTime->setTime(20, 00);
+        
         }
-
-        // set time to noon relative to UTC
-        $resultDateTime = DateTime::createFromFormat('U', $resultDeadlineTimestamp);
-        $resultDateTime->setTime(19, 00);
 
         return $resultDateTime;
     }
@@ -176,7 +192,7 @@ class ProductCalendar {
 
         // set time to noon relative to UTC
         $resultDateTime = DateTime::createFromFormat('U', $resultTimestamp);
-        $resultDateTime->setTime(19, 00);
+        $resultDateTime->setTime(20, 00);
 
         return $resultDateTime;
     }
@@ -190,10 +206,10 @@ class ProductCalendar {
         HtmlHelpers::writeTableCellStartTag($tableCellStyle);
 
         // always show product image/title
- /************** TEMPORARILY REMOVING IMAGE FROM CALENDAR VIEW **********************
-        echo $productDetails->get_image(array(80, 128));
+ /************** TEMPORARILY ADD IMAGE BACK TO CALENDAR VIEW ***************/
+        echo '<div style="text-align: center;">' . $productDetails->get_image(array(80, 128)) . '</div>';
         HtmlHelpers::writeBreakLine();
-***********************************************************/
+/***********************************************************/
         echo $productDetails->get_title();
         HtmlHelpers::writeBreakLine();
         HtmlHelpers::writeBreakLine();
@@ -209,7 +225,7 @@ class ProductCalendar {
 		//} elseif (meal_already_bought($productId) || meal_in_cart($productId)) {
 		} elseif (meal_in_cart($productId)) {
             HtmlHelpers::writeParagraphStartTag("text-align:center;");
-            HtmlHelpers::writeAnchor($productDetails->get_permalink(), "View details", "color: #9296A1;");
+            HtmlHelpers::writeAnchor($productDetails->get_permalink(), "View details", "color: #9296A1;", $productDetails->post->post_excerpt);
             HtmlHelpers::writeParagraphEndTag();
         } else {
             HtmlHelpers::writeParagraphStartTag("text-align:center;");
@@ -223,9 +239,15 @@ class ProductCalendar {
             if ($productTimingKey == ProductOrderTiming::KindaLate) {
                 HtmlHelpers::writeParagraphStartTag("color: #FF6600;");
                 echo "<i class=\"fa fa-clock-o fa-lg\" aria-hidden=\"true\"></i>&nbsp;";
-                HtmlHelpers::writeInItalics("Late orders accepted until");
+                HtmlHelpers::writeInItalics("Orders accepted until");
                 HtmlHelpers::writeBreakLine();
-                HtmlHelpers::writeInItalics(date('D, M d', $orderTooLateDateTime->getTimestamp()) . " at noon");
+                HtmlHelpers::writeInItalics(date('D, M d', $orderTooLateDateTime->getTimestamp()));
+                //state time for deadline. Sunday night is 9pm and every other day is noon.
+                if (date('N' , $orderTooLateDateTime->getTimestamp()) == 7) {
+                    echo '<em> at 9pm</em>';
+                } else {
+                    echo '<em> at noon</em>';
+                }
                 HtmlHelpers::writeParagraphEndTag();    
             }
         }

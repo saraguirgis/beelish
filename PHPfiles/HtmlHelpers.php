@@ -66,9 +66,10 @@ class HtmlHelpers {
      * @param string $linkRef Address of link.
      * @param string $title Anchor title/text.
      * @param string $style (Optional) Anchcor style.
+     * @param string $hovertext (Optional) Anchor hover text.
      */
-    public static function writeAnchor($linkRef, $title, $style = null) {
-        HtmlHelpers::writeAnchorStartTag($linkRef, $style);
+    public static function writeAnchor($linkRef, $title, $style = null, $hovertext = null) {
+        HtmlHelpers::writeAnchorStartTag($linkRef, $hovertext, $style);
         echo $title;
         HtmlHelpers::writeAnchorEndTag();
     }

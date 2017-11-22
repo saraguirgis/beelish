@@ -62,18 +62,18 @@ function childIdDropDownOnChange(){
 
 	<?php
 	
-// display upcoming order deadline
-	
-	$displaydeadline = strtotime("next Tuesday");
-	$displayorderweekstart = strtotime("+6 days", $displaydeadline);
-	$displayorderweekend = strtotime("+4 days", $displayorderweekstart);
-
-	echo "<h5><i class=\"fa fa-hourglass-half\" aria-hidden=\"true\"></i>  Upcoming Deadline:</h5>Order meals by <b><font color=\"#3ab44a\"> ".
-		 date("D, M j", $displaydeadline ) . 
-		 " at noon</b></font> for the week of <b>" . date("M j", $displayorderweekstart ) . " - " . date("M j", $displayorderweekend ) . 
-		 "</b>.<font size=\"-1\"><BR><i class=\"fa fa-star\" aria-hidden=\"true\"></i> <i>More about timing, pricing, and other information <a href=\"http://www.beelish.com/ordering-info\">here</a>.</i><br><BR><br>";
-
-
+/******* hide upcoming order deadline notice
+*	
+*	$displaydeadline = strtotime("next Tuesday");
+*	$displayorderweekstart = strtotime("+6 days", $displaydeadline);
+*	$displayorderweekend = strtotime("+4 days", $displayorderweekstart);
+*
+*	echo "<h5><i class=\"fa fa-hourglass-half\" aria-hidden=\"true\"></i>  Upcoming Deadline:</h5>Order meals by <b><font color=\"#3ab44a\"> ".
+*		 date("D, M j", $displaydeadline ) . 
+*		 " at noon</b></font> for the week of <b>" . date("M j", $displayorderweekstart ) . " - " . date("M j", $displayorderweekend ) . 
+*		 "</b>.<font size=\"-1\"><BR><i class=\"fa fa-star\" aria-hidden=\"true\"></i> <i>More about timing, pricing, and other information <a href=\"http://www.beelish.com/ordering-info\">here</a>.</i><br><BR><br>";
+*
+************************************/
 
 // display child drop down
 
@@ -100,18 +100,21 @@ function childIdDropDownOnChange(){
 	$selectedChildId = getSelectedChildId();
 	renderChildDropDownMenu($selectedChildId);
 
-
+// display ordering information link
+	
+	echo "<font size=\"-1\"><i class=\"fa fa-star\" aria-hidden=\"true\"></i><em> Find order deadlines, meal pricing, and other details on the <b><a href=\"http://www.beelish.com/ordering-info\">Ordering Information</a></b> page.<br>
+	To see menu item descriptions, hover or click on the <b>Order</b> links below.</i></font></em><br><br>";
 
 // Display Menu Tables
 
-$octoberCalendar = new ProductCalendar("October 2017", BusinessConfigs::OctoberProducts, $selectedChildId);
-$octoberCalendar->renderCalendar();
+// $october2017Calendar = new ProductCalendar("October 2017", BusinessConfigs::OctoberProducts, $selectedChildId);
+// $october2017Calendar->renderCalendar();
 
-$novemberCalendar = new ProductCalendar("November 2017", BusinessConfigs::NovemberProducts, $selectedChildId);
-$novemberCalendar->renderCalendar();
+$november2017Calendar = new ProductCalendar("November 2017", BusinessConfigs::NovemberProducts, $selectedChildId);
+$november2017Calendar->renderCalendar();
 
-$decemberCalendar = new ProductCalendar("December 2017", BusinessConfigs::DecemberProducts, $selectedChildId);
-$decemberCalendar->renderCalendar();
+$december2017Calendar = new ProductCalendar("December 2017", BusinessConfigs::DecemberProducts, $selectedChildId);
+$december2017Calendar->renderCalendar();
 ?>
 	  
       </main>

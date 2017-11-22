@@ -1,6 +1,6 @@
 <?php
 class BusinessConfigs {
-	const LatePenaltyChargeInDollars = 1.00;
+	const LatePenaltyChargeInDollars = 0.00;
 	
 	const ChangesDeadlineInBusinessDays = 2;
 
@@ -50,23 +50,23 @@ class BusinessConfigs {
     );
     
     const NovemberProducts = array(
-		"10/30/2017" => ProductCalendar::NoDetailsProductId,
-		"10/31/2017" => ProductCalendar::NoDetailsProductId,
-		"11/01/2017" => 975,
-		"11/02/2017" => 976,
-		"11/03/2017" => 977,
+	//	"10/30/2017" => ProductCalendar::NoDetailsProductId,
+	//	"10/31/2017" => ProductCalendar::NoDetailsProductId,
+	//	"11/01/2017" => 975,
+	//	"11/02/2017" => 976,
+	//	"11/03/2017" => 977,
 
-		"11/06/2017" => 978,
-		"11/07/2017" => 979,
-		"11/08/2017" => 980,
-		"11/09/2017" => 990,
-		"11/10/2017" => ProductCalendar::NoLunchProductId,
+	//	"11/06/2017" => 978,
+	//	"11/07/2017" => 979,
+	//	"11/08/2017" => 980,
+	//	"11/09/2017" => 990,
+	//	"11/10/2017" => ProductCalendar::NoLunchProductId,
 
-		"11/14/2017" => 991,
-		"11/13/2017" => 992,
-		"11/15/2017" => 993,
-		"11/16/2017" => 1004,
-		"11/17/2017" => 1005,
+	//	"11/14/2017" => 991,
+	//	"11/13/2017" => 992,
+	//	"11/15/2017" => 993,
+	//	"11/16/2017" => 1004,
+	//	"11/17/2017" => 1005,
 
 		"11/20/2017" => 1015,
 		"11/21/2017" => 1016,
