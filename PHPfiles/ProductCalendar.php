@@ -76,6 +76,61 @@ class ProductCalendar {
         HtmlHelpers::writeBreakLine();        
     }
 
+
+    function renderMenuView() {
+        // Write month title
+        HtmlHelpers::writeH2($this->calendarTitle);
+
+        HtmlHelpers::writeTableStartTag("color: #000000; vertical-align: top;");
+
+        // table header row
+        HtmlHelpers::writeTableRowStartTag();
+        HtmlHelpers::writeTableHeaderCell("Monday",    ThemeConstants::TableCellHeaderStyle);
+        HtmlHelpers::writeTableHeaderCell("Tuesday",   ThemeConstants::TableCellHeaderStyle);
+        HtmlHelpers::writeTableHeaderCell("Wednesday", ThemeConstants::TableCellHeaderStyle);
+        HtmlHelpers::writeTableHeaderCell("Thursday",  ThemeConstants::TableCellHeaderStyle);
+        HtmlHelpers::writeTableHeaderCell("Friday",    ThemeConstants::TableCellHeaderStyle);
+        HtmlHelpers::writeTableRowEndTag();
+
+        HtmlHelpers::writeTableRowStartTag();
+
+        $columnNumber = 0;
+        foreach ($this->products as $productDate => $productId) {
+
+            // end table row and start a new one 
+            if ($columnNumber > 4) {
+                HtmlHelpers::writeTableRowEndTag();
+                HtmlHelpers::writeTableRowStartTag();
+                $columnNumber = 0;
+            }
+            if ($productId === ProductCalendar::NoLunchProductId) {
+                ProductCalendar::renderNoLunchTableCell($productDate);
+            } elseif ($productId === ProductCalendar::NoDetailsProductId) {
+                ProductCalendar::renderNoProductDetailsTableCell();
+            } else {
+                $productDetails = wc_get_product($productId);
+
+                if (BusinessConfigs::ResetProductState) {
+                  ProductCalendar::resetProductState($productId, $productDetails);
+                }
+
+                $orderLateDateTime = ProductCalendar::getLateOrderDeadline(strtotime($productDetails->get_SKU()));
+                $orderTooLateDateTime = ProductCalendar::getTooLateOrderDeadline(strtotime($productDetails->get_SKU()));        
+                $productTimingKey = ProductCalendar::updateProductStateForTiming($productId, $productDetails, $orderLateDateTime, $orderTooLateDateTime);
+                ProductCalendar::renderViewMenuTableCell($productId, $productDetails, $productTimingKey, $orderTooLateDateTime, $this->childId);
+            }
+
+            $columnNumber++;
+        }
+
+        HtmlHelpers::writeTableRowEndTag();
+        HtmlHelpers::writeTableEndTag();
+        HtmlHelpers::writeBreakLine();
+        HtmlHelpers::writeBreakLine();        
+    }
+
+
+
     private static function resetProductState($productId, $productDetails) {
         update_post_meta($productId, 'timing_key', ProductOrderTiming::OnTime);
 
@@ -207,7 +262,11 @@ class ProductCalendar {
 
         // always show product image/title
  /************** TEMPORARILY ADD IMAGE BACK TO CALENDAR VIEW ***************/
-        echo '<div style="text-align: center;">' . $productDetails->get_image(array(80, 128)) . '</div>';
+        echo '<div style="text-align: center;">';
+        HtmlHelpers::writeAnchorStartTag($productDetails->get_permalink(), $productDetails->post->post_excerpt);
+        echo $productDetails->get_image(array(80, 128));
+        HtmlHelpers::writeAnchorEndTag();
+        echo '</div>';
         HtmlHelpers::writeBreakLine();
 /***********************************************************/
         echo $productDetails->get_title();
@@ -218,7 +277,7 @@ class ProductCalendar {
             remove_expired_meal_from_cart($productId);
 
             HtmlHelpers::writeParagraphStartTag("text-align:center;");
-            HtmlHelpers::writeInItalics("Ordering expired");
+            HtmlHelpers::writeInItalics("Ordering closed");
             HtmlHelpers::writeParagraphEndTag();
             HtmlHelpers::writeBreakLine();
         // commenting this out to remove "meal already bought" part since with multiple children we want them to be able to purchase again even if it was already bought
@@ -242,7 +301,6 @@ class ProductCalendar {
                 HtmlHelpers::writeInItalics("Orders accepted until");
                 HtmlHelpers::writeBreakLine();
                 HtmlHelpers::writeInItalics(date('D, M d', $orderTooLateDateTime->getTimestamp()));
-                //state time for deadline. Sunday night is 9pm and every other day is noon.
                 if (date('N' , $orderTooLateDateTime->getTimestamp()) == 7) {
                     echo '<em> at 9pm</em>';
                 } else {
@@ -277,5 +335,32 @@ class ProductCalendar {
         
         HtmlHelpers::writeTableCellEndTag();
     }
+
+
+    private static function renderViewMenuTableCell($productId, $productDetails, $productTimingKey, $orderTooLateDateTime, $childId) {
+        $tableCellStyle = ThemeConstants::TableCellDefaultStyle;
+
+        HtmlHelpers::writeTableCellStartTag($tableCellStyle);
+
+        // always show product image, title, and short description
+        echo '<div style="text-align: center;">' . $productDetails->get_image(array(80, 128)) . '</div>';
+        HtmlHelpers::writeBreakLine();
+        echo '<b>' . $productDetails->get_title() . '</b>';
+        HtmlHelpers::writeBreakLine();
+        HtmlHelpers::writeBreakLine();
+        echo '<div style="font-size:80%">' . $productDetails->post->post_excerpt . '</div>';
+        HtmlHelpers::writeBreakLine();
+        
+        HtmlHelpers::writeTableCellEndTag();
+    }
+
+
+
+
+
+
+
+
+
 }
 ?>

@@ -110,8 +110,8 @@ function childIdDropDownOnChange(){
 // $october2017Calendar = new ProductCalendar("October 2017", BusinessConfigs::OctoberProducts, $selectedChildId);
 // $october2017Calendar->renderCalendar();
 
-$november2017Calendar = new ProductCalendar("November 2017", BusinessConfigs::NovemberProducts, $selectedChildId);
-$november2017Calendar->renderCalendar();
+// $november2017Calendar = new ProductCalendar("November 2017", BusinessConfigs::NovemberProducts, $selectedChildId);
+// $november2017Calendar->renderCalendar();
 
 $december2017Calendar = new ProductCalendar("December 2017", BusinessConfigs::DecemberProducts, $selectedChildId);
 $december2017Calendar->renderCalendar();

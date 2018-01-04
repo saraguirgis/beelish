@@ -33,43 +33,6 @@ $layout = onepress_get_layout();
 		
 <?php
 
-//test Tuesday deadline
-$deliveryTimestamp = (strtotime('2017-11-30'));
-echo '<br>var dump $deliveryTimestamp: ' . var_dump($deliveryTimestamp);
-echo '<br>Day of the week of $deliveryTimestamp: ' . date( N , $deliveryTimestamp);
-
-$deadlineTimestamp = strtotime("last Sunday", $deliveryTimestamp);
-
-echo '<br>Last Sunday timestamp: ' . $deadlineTimestamp;
-echo '<br>Last Sunday formatted as date: ' . date('l jS \of F Y h:i:s A, T', $deadlineTimestamp);
-
-// set time to 9pm
-//75600 = 60 * 21 * 60 (aka 9pm)
-$deadlineTimestamp = $deadlineTimestamp + 75600;
-
-echo '<br>$deadlineTimeStamp formatted as date: ' . date('l jS \of F Y h:i:s A', $deadlineTimestamp);
-
-$resultDateTimeTest = new DateTime;
-$resultDateTimeTest->setTimestamp($deadlineTimestamp);
-echo '<br>';
-
-var_dump($resultDateTimeTest);
-
-echo '<br>';
-
-
-//test IF FUNCTION
-if (date( N , $deliveryTimestamp) == 2) {
-	
-	echo '<br>the date is a tuesday';
-
-} else {
-	
-	echo '<br>the date is not a tuesday';
-}			
-
-
-
 //test displaying order info
 
 $filters = array(
